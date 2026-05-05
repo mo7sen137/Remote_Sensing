@@ -252,10 +252,6 @@ def setup_page_config():
             box-shadow: 0 0 20px rgba(0, 102, 255, 0.5) !important;
         }
         
-        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
-            color: #E8EAED !important;
-        }
-        
         /* =========== MAIN CONTENT =========== */
         [data-testid="stMainBlockContainer"] {
             background: transparent;
@@ -728,47 +724,6 @@ def setup_page_config():
             animation: slideInLeft 0.3s ease-out;
         }
         
-        /* =========== RESPONSIVE DESIGN =========== */
-        @media (max-width: 768px) {
-            h1 { font-size: 1.875rem !important; }
-            h2 { font-size: 1.5rem !important; }
-            h3 { font-size: 1.125rem !important; }
-            
-            [data-testid="stMainBlockContainer"] { padding: 1rem; }
-            
-            .stButton > button,
-            .stTextInput > div > div > input,
-            .stSelectbox > div > div > select {
-                min-height: 48px;
-                font-size: 1rem;
-            }
-            
-            .stTabs [data-baseweb="tab-list"] {
-                flex-wrap: wrap;
-            }
-            
-            .stTabs [data-baseweb="tab-list"] button {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 { font-size: 1.5rem !important; }
-            h2 { font-size: 1.25rem !important; }
-            
-            [data-testid="stMainBlockContainer"] { padding: 0.75rem; }
-            
-            .stButton > button {
-                width: 100%;
-                padding: 1rem !important;
-            }
-            
-            .stMetric {
-                padding: 1rem;
-            }
-        }
-        
         /* =========== FOCUS STATES (Accessibility) =========== */
         button:focus-visible {
             outline: 3px solid #0066FF;
@@ -1054,17 +1009,6 @@ def setup_page_config():
         /* Content Visibility for Performance */
         [data-testid="stTabs"] {
             contain: layout style paint;
-        }
-        
-        /* Optimize Animations for Performance */
-        @media (max-width: 768px) {
-            .pulse {
-                animation-duration: 1.5s;
-            }
-            
-            h1, h2, h3 {
-                animation: none !important;
-            }
         }
         
         /* =========== COLOR BLINDNESS SUPPORT =========== */
