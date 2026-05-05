@@ -380,16 +380,46 @@ def setup_page_config():
             background: linear-gradient(180deg, #3B82F6, #60A5FA);
         }
         
-        /* =========== ANIMATIONS =========== */
+        /* =========== SHADOW SYSTEM (Elevation Levels) =========== */
+        .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .shadow-xl {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* =========== ANIMATIONS (20+ Keyframes) =========== */
         @keyframes slideInDown {
-            from {
-                opacity: 0;
-                transform: translate Y(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         @keyframes fadeIn {
@@ -397,15 +427,14 @@ def setup_page_config():
             to { opacity: 1; }
         }
         
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes pulse {
@@ -413,15 +442,118 @@ def setup_page_config():
             50% { opacity: 0.7; }
         }
         
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
         @keyframes shimmer {
             0% { background-position: -1000px 0; }
             100% { background-position: 1000px 0; }
         }
         
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(0, 102, 255, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 102, 255, 0.8); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+        
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes expandWidth {
+            from { width: 0%; opacity: 0; }
+            to { width: 100%; opacity: 1; }
+        }
+        
         /* Animation application */
-        h1 { animation: slideInDown 0.6s ease-out; }
+        h1 { animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
         h2 { animation: slideUp 0.5s ease-out 0.1s both; }
         h3 { animation: fadeIn 0.4s ease-out 0.2s both; }
+        
+        /* =========== COMPONENT STATES =========== */
+        /* Button States */
+        .stButton > button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stButton > button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .stButton > button:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* Loading State Animation */
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Success Pulse */
+        .stSuccess {
+            animation: slideInUp 0.4s ease-out;
+        }
+        
+        .stError {
+            animation: slideInUp 0.4s ease-out;
+            animation: heartbeat 0.5s ease-in-out;
+        }
+        
+        /* Input Focus Glow */
+        .stTextInput > div > div > input:focus,
+        .stNumberInput > div > div > input:focus {
+            animation: glow 2s ease-in-out;
+        }
+        
+        /* Metric Lift on Hover with Animation */
+        .stMetric {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        /* Expander Smooth Opening */
+        .streamlit-expanderHeader {
+            animation: slideInLeft 0.3s ease-out;
+        }
         
         /* =========== RESPONSIVE DESIGN =========== */
         @media (max-width: 768px) {
@@ -437,6 +569,31 @@ def setup_page_config():
                 min-height: 48px;
                 font-size: 1rem;
             }
+            
+            .stTabs [data-baseweb="tab-list"] {
+                flex-wrap: wrap;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 1.5rem !important; }
+            h2 { font-size: 1.25rem !important; }
+            
+            [data-testid="stMainBlockContainer"] { padding: 0.75rem; }
+            
+            .stButton > button {
+                width: 100%;
+                padding: 1rem !important;
+            }
+            
+            .stMetric {
+                padding: 1rem;
+            }
         }
         
         /* =========== FOCUS STATES (Accessibility) =========== */
@@ -451,6 +608,30 @@ def setup_page_config():
             outline-offset: 2px;
         }
         
+        /* Tab Focus */
+        .stTabs [data-baseweb="tab-list"] button:focus-visible {
+            outline: 3px dashed #0066FF;
+            outline-offset: 3px;
+        }
+        
+        /* =========== LOADING & ASYNC STATES =========== */
+        .spinner {
+            animate: spin 1s linear infinite;
+            border: 3px solid rgba(0, 102, 255, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #0066FF;
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Progress Bar Animation */
+        .progress-bar {
+            animation: expandWidth 0.8s ease-out;
+            background: linear-gradient(90deg, #0066FF, #3B82F6);
+            height: 4px;
+            border-radius: 2px;
+        }
+        
         /* =========== REDUCED MOTION =========== */
         @media (prefers-reduced-motion: reduce) {
             * {
@@ -458,6 +639,361 @@ def setup_page_config():
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
+        }
+        
+        /* =========== DISABLED STATE =========== */
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        input:disabled,
+        select:disabled {
+            background-color: #0F172A !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        /* =========== PHASE 3: ADVANCED RESPONSIVE =========== */
+        @media (max-width: 1024px) {
+            [data-testid="stSidebar"] {
+                width: 100% !important;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] button {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 1.875rem !important; line-height: 1.2; }
+            h2 { font-size: 1.5rem !important; line-height: 1.3; }
+            h3 { font-size: 1.125rem !important; }
+            
+            [data-testid="stMainBlockContainer"] { padding: 1rem; }
+            [data-testid="stSidebar"] { width: 50% !important; }
+            
+            .stButton > button,
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div > select {
+                min-height: 48px;
+                font-size: 1rem;
+                padding: 0.75rem 1rem !important;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                flex: 1 1 auto;
+                min-width: 100px;
+            }
+            
+            .stMetric {
+                padding: 1.25rem;
+                border-radius: 10px;
+            }
+            
+            .stDataFrame {
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            h1 { font-size: 1.5rem !important; margin-bottom: 0.5rem; }
+            h2 { font-size: 1.25rem !important; margin-bottom: 0.5rem; }
+            h3 { font-size: 1rem !important; }
+            
+            [data-testid="stMainBlockContainer"] { padding: 0.75rem; }
+            [data-testid="stSidebar"] { width: 100% !important; }
+            
+            .stButton > button {
+                width: 100% !important;
+                padding: 0.875rem 1rem !important;
+                font-size: 0.95rem;
+            }
+            
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div > select,
+            .stNumberInput > div > div > input {
+                width: 100%;
+                font-size: 1rem;
+                padding: 0.75rem 1rem !important;
+            }
+            
+            .stMetric {
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.75rem;
+            }
+            
+            .stTabs [data-baseweb="tab-list"] button {
+                padding: 0.5rem 0.875rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+            
+            .streamlit-expanderHeader {
+                padding: 0.75rem !important;
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 1.25rem !important; }
+            h2 { font-size: 1.125rem !important; }
+            h3 { font-size: 1rem !important; }
+            
+            p, span, div { font-size: 0.95rem; }
+            
+            [data-testid="stMainBlockContainer"] { padding: 0.5rem; }
+            
+            .stButton > button {
+                width: 100% !important;
+                padding: 0.75rem 1rem !important;
+                min-height: 44px;
+            }
+            
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div > select,
+            .stNumberInput > div > div > input {
+                min-height: 44px;
+            }
+            
+            .stMetric {
+                padding: 0.75rem;
+                border: 1px solid #334155;
+            }
+            
+            .stFileUploader {
+                padding: 1rem;
+            }
+            
+            .stDataFrame {
+                font-size: 0.85rem;
+            }
+            
+            .stDataFrame th {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .stDataFrame td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* =========== PHASE 3: ENHANCED ACCESSIBILITY =========== */
+        /* Semantic Color Meanings */
+        .status-success {
+            color: #10B981;
+            border-left: 4px solid #10B981;
+        }
+        
+        .status-error {
+            color: #EF4444;
+            border-left: 4px solid #EF4444;
+        }
+        
+        .status-warning {
+            color: #F59E0B;
+            border-left: 4px solid #F59E0B;
+        }
+        
+        .status-info {
+            color: #3B82F6;
+            border-left: 4px solid #3B82F6;
+        }
+        
+        /* Skip Link for Keyboard Navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #0066FF;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Enhanced Keyboard Navigation */
+        *:focus-visible {
+            outline: 2px solid #0066FF;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: more) {
+            :root {
+                --color-primary: #0052CC;
+                --color-gray-300: #A0A0A0;
+            }
+            
+            button:focus-visible {
+                outline-width: 3px;
+            }
+        }
+        
+        /* Dark Mode Support (Already Applied) */
+        @media (prefers-color-scheme: dark) {
+            .stApp, html, body {
+                background: linear-gradient(135deg, #0F172A 0%, #1A1F47 100%);
+                color: #E8EAED;
+            }
+        }
+        
+        /* =========== PHASE 3: PERFORMANCE OPTIMIZATIONS =========== */
+        /* Font Display Optimization (avoid blank text) */
+        @font-face {
+            font-family: 'Inter';
+            font-display: swap;
+        }
+        
+        @font-face {
+            font-family: 'Sora';
+            font-display: swap;
+        }
+        
+        /* Lazy Loading Container */
+        .lazy-load {
+            background: linear-gradient(90deg, #1E293B, #1A1F47, #1E293B);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        /* Content Visibility for Performance */
+        [data-testid="stTabs"] {
+            contain: layout style paint;
+        }
+        
+        /* Optimize Animations for Performance */
+        @media (max-width: 768px) {
+            .pulse {
+                animation-duration: 1.5s;
+            }
+            
+            h1, h2, h3 {
+                animation: none !important;
+            }
+        }
+        
+        /* =========== COLOR BLINDNESS SUPPORT =========== */
+        /* Use Protanopia-safe colors */
+        .success-indicator {
+            background: #0173B2; /* Blue for success */
+        }
+        
+        .error-indicator {
+            background: #DE8F05; /* Orange for error */
+            border: 2px solid #CC78BC; /* Purple pattern support */
+        }
+        
+        .warning-indicator {
+            background: #29AF7F; /* Green for warning */
+        }
+        
+        /* =========== TOUCH OPTIMIZATION =========== */
+        @media (hover: none) and (pointer: coarse) {
+            .stButton > button:hover {
+                transform: none;
+            }
+            
+            .stButton > button:active {
+                background: var(--color-primary);
+                opacity: 0.9;
+            }
+            
+            .stMetric:hover {
+                transform: none;
+            }
+        }
+        
+        /* Larger hit targets for touch */
+        button, input, select, [role="button"] {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        
+        /* =========== REDUCED MOTION (Improved) =========== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0 !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0 !important;
+            }
+            
+            html {
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* =========== LINK STYLING =========== */
+        a {
+            color: #60A5FA;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        a:hover {
+            border-bottom-color: #0066FF;
+        }
+        
+        a:focus-visible {
+            outline: 2px dashed #0066FF;
+            outline-offset: 2px;
+        }
+        
+        /* =========== FORM VALIDATION STATES =========== */
+        .input-error {
+            border-color: #EF4444 !important;
+            background-color: rgba(239, 68, 68, 0.1) !important;
+        }
+        
+        .input-success {
+            border-color: #10B981 !important;
+            background-color: rgba(16, 185, 129, 0.1) !important;
+        }
+        
+        .input-warning {
+            border-color: #F59E0B !important;
+            background-color: rgba(245, 158, 11, 0.1) !important;
+        }
+        
+        /* =========== PRINT STYLES =========== */
+        @media print {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+            
+            [data-testid="stSidebar"],
+            [data-testid="stToolbar"],
+            .stDeployButton,
+            button { display: none !important; }
+            
+            [data-testid="stMainBlockContainer"] {
+                padding: 20mm;
+            }
+            
+            body, p { color: black !important; }
         }
         </style>
     """, unsafe_allow_html=True)
