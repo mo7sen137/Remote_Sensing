@@ -1,5 +1,7 @@
 # 🛰️ Remote Sensing Land Classification Web Application
 
+> ✨ **NEW:** Professional cyberpunk-themed interface with neon accents! See [THEME_GUIDE.md](THEME_GUIDE.md) for design details.
+
 ## Project Overview
 
 This project implements an automated **Land Cover Classification System** using satellite imagery from Landsat 8. The system applies machine learning algorithms to classify pixels in satellite images into four categories:

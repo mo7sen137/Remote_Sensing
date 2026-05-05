@@ -1,0 +1,270 @@
+<!-- Visual Color Palette Display -->
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Remote Sensing - Color Palette</title>
+    <style>
+        * {
+            font-family: 'Space Mono', 'Courier New', monospace;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0033 50%, #0a0e27 100%);
+            color: #e0e0ff;
+            padding: 40px;
+            margin: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #00ffff;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            margin: 40px 0;
+        }
+        
+        .section h2 {
+            color: #ff00ff;
+            font-family: 'Orbitron', sans-serif;
+            border-bottom: 3px solid #00ff88;
+            padding-bottom: 10px;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .color-box {
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .color-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+        }
+        
+        .color-sample {
+            width: 100%;
+            height: 100px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .color-name {
+            font-weight: bold;
+            color: #00ffaa;
+            margin-bottom: 5px;
+        }
+        
+        .color-hex {
+            font-family: monospace;
+            color: #d0d0e8;
+            font-size: 0.9em;
+        }
+        
+        .color-rgb {
+            font-family: monospace;
+            color: #b0b0d0;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 REMOTE SENSING THEME - COLOR PALETTE</h1>
+    
+    <!-- Primary Colors -->
+    <div class="section">
+        <h2>🌈 Primary Theme Colors</h2>
+        <div class="color-grid">
+            <!-- Deep Black -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #0a0e27;"></div>
+                <div class="color-name">Deep Black</div>
+                <div class="color-hex">#0a0e27</div>
+                <div class="color-rgb">rgb(10, 14, 39)</div>
+            </div>
+            
+            <!-- Neon Green -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #00ff88;"></div>
+                <div class="color-name">Neon Green</div>
+                <div class="color-hex">#00ff88</div>
+                <div class="color-rgb">rgb(0, 255, 136)</div>
+            </div>
+            
+            <!-- Neon Cyan -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #00ffff;"></div>
+                <div class="color-name">Neon Cyan</div>
+                <div class="color-hex">#00ffff</div>
+                <div class="color-rgb">rgb(0, 255, 255)</div>
+            </div>
+            
+            <!-- Neon Magenta -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #ff00ff;"></div>
+                <div class="color-name">Neon Magenta</div>
+                <div class="color-hex">#ff00ff</div>
+                <div class="color-rgb">rgb(255, 0, 255)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Text Colors -->
+    <div class="section">
+        <h2>📝 Text Colors</h2>
+        <div class="color-grid">
+            <!-- Light Purple -->
+            <div class="color-box">
+                <div class="color-sample" style="background: linear-gradient(135deg, #0a0e27, #1a0033); border: 2px solid #e0e0ff;"></div>
+                <div class="color-name">Primary Text</div>
+                <div class="color-hex">#e0e0ff</div>
+                <div class="color-rgb">rgb(224, 224, 255)</div>
+            </div>
+            
+            <!-- Muted Gray -->
+            <div class="color-box">
+                <div class="color-sample" style="background: linear-gradient(135deg, #0a0e27, #1a0033); border: 2px solid #d0d0e8;"></div>
+                <div class="color-name">Secondary Text</div>
+                <div class="color-hex">#d0d0e8</div>
+                <div class="color-rgb">rgb(208, 208, 232)</div>
+            </div>
+            
+            <!-- Neon Lime -->
+            <div class="color-box">
+                <div class="color-sample" style="background: linear-gradient(135deg, #0a0e27, #1a0033); border: 2px solid #00ffaa;"></div>
+                <div class="color-name">Accent Text</div>
+                <div class="color-hex">#00ffaa</div>
+                <div class="color-rgb">rgb(0, 255, 170)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Classification Colors -->
+    <div class="section">
+        <h2>🗺️ Land Cover Classification Colors</h2>
+        <div class="color-grid">
+            <!-- Water -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #1e90ff;"></div>
+                <div class="color-name">💧 Water</div>
+                <div class="color-hex">#1e90ff</div>
+                <div class="color-rgb">rgb(30, 144, 255)</div>
+            </div>
+            
+            <!-- Agriculture -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #228b22;"></div>
+                <div class="color-name">🌱 Agriculture</div>
+                <div class="color-hex">#228b22</div>
+                <div class="color-rgb">rgb(34, 139, 34)</div>
+            </div>
+            
+            <!-- Urban -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #ff4444;"></div>
+                <div class="color-name">🏢 Urban</div>
+                <div class="color-hex">#ff4444</div>
+                <div class="color-rgb">rgb(255, 68, 68)</div>
+            </div>
+            
+            <!-- Desert -->
+            <div class="color-box">
+                <div class="color-sample" style="background-color: #ffa500;"></div>
+                <div class="color-name">🏜️ Desert</div>
+                <div class="color-hex">#ffa500</div>
+                <div class="color-rgb">rgb(255, 165, 0)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Interactive Demo -->
+    <div class="section">
+        <h2>🎨 Button States Demo</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <!-- Normal Button -->
+            <button style="
+                background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+                color: #0a0e27;
+                border: 2px solid #ff00ff;
+                border-radius: 12px;
+                padding: 12px 28px;
+                font-weight: 700;
+                font-size: 1.1em;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            ">Normal State</button>
+            
+            <!-- Hover Button -->
+            <button style="
+                background: linear-gradient(135deg, #00ffff 0%, #ff00ff 100%);
+                color: #0a0e27;
+                border: 2px solid #00ffff;
+                border-radius: 12px;
+                padding: 12px 28px;
+                font-weight: 700;
+                font-size: 1.1em;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                transform: translateY(-3px) scale(1.08);
+            ">Hover State</button>
+            
+            <!-- Success State -->
+            <button style="
+                background: linear-gradient(135deg, #00ff88 0%, #00ffaa 100%);
+                color: #0a0e27;
+                border: 2px solid #00ff88;
+                border-radius: 12px;
+                padding: 12px 28px;
+                font-weight: 700;
+                font-size: 1.1em;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+                cursor: pointer;
+            ">Success State</button>
+        </div>
+    </div>
+    
+    <!-- Info Box -->
+    <div style="
+        background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 255, 0.1));
+        border: 2px solid #00ffaa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 40px;
+        text-align: center;
+    ">
+        <h3 style="color: #00ffff; margin-top: 0;">✨ Professional Cyberpunk Theme</h3>
+        <p style="color: #d0d0e8;">
+            This color palette has been carefully designed for maximum readability and professional aesthetics.
+        </p>
+        <p style="color: #e0e0ff;">
+            <strong>All colors maintain accessibility standards (WCAG AA+)</strong>
+        </p>
+    </div>
+    
+</body>
+</html>
