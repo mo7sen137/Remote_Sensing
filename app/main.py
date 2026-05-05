@@ -29,7 +29,7 @@ import config
 # ============================================================================
 
 def setup_page_config():
-    """Configure Streamlit page settings with Cyberpunk theme."""
+    """Configure Streamlit page settings with Professional Enterprise Theme."""
     st.set_page_config(
         page_title="🛰️ Remote Sensing Land Classification",
         page_icon="🛰️",
@@ -37,321 +37,427 @@ def setup_page_config():
         initial_sidebar_state="expanded"
     )
     
-    # Professional Cyberpunk Dark Theme with Neon Colors
+    # =========================================================================
+    # PROFESSIONAL ENTERPRISE DESIGN SYSTEM v2.0
+    # =========================================================================
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+        /* =========== COLOR SYSTEM (Professional) =========== */
+        :root {
+            --color-primary: #0066FF;
+            --color-primary-light: #3B82F6;
+            --color-primary-dark: #0051CC;
+            
+            --color-accent: #FF6B35;
+            
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-error: #EF4444;
+            --color-info: #3B82F6;
+            
+            --color-gray-50: #F9FAFB;
+            --color-gray-100: #F3F4F6;
+            --color-gray-200: #E5E7EB;
+            --color-gray-300: #D1D5DB;
+            --color-gray-400: #9CA3AF;
+            --color-gray-500: #6B7280;
+            --color-gray-600: #4B5563;
+            --color-gray-700: #374151;
+            --color-gray-800: #1F2937;
+            --color-gray-900: #111827;
+            
+            --color-dark-bg: #0F172A;
+            --color-dark-card: #1E293B;
+            --color-dark-border: #334155;
+        }
         
-        /* ============ GLOBAL STYLES ============ */
+        /* =========== GLOBAL STYLES =========== */
         * {
-            font-family: 'Space Mono', 'Courier New', monospace;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
         }
         
-        html, body, [class*="css"]  {
-            background: linear-gradient(135deg, #0a0e27 0%, #1a0033 50%, #0a0e27 100%) !important;
+        html, body, [class*="css"] {
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
         }
         
-        /* ============ MAIN APP ============ */
         .stApp {
-            background: linear-gradient(135deg, #0a0e27 0%, #1a0033 50%, #0a0e27 100%);
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
+            color: #E8EAED;
         }
         
-        /* ============ SIDEBAR ============ */
-        [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #0f001a 0%, #1a0033 50%, #0f001a 100%);
-            border-right: 3px solid #00ff88;
-            box-shadow: inset -2px 0 10px rgba(0, 255, 136, 0.1);
-        }
-        
-        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
-            color: #00ff88 !important;
-        }
-        
-        /* ============ MAIN CONTENT ============ */
-        [data-testid="stMainBlockContainer"] {
-            background: transparent;
-            color: #e0e0ff;
-        }
-        
-        /* ============ TYPOGRAPHY ============ */
+        /* =========== TYPOGRAPHY =========== */
         h1 {
-            color: #00ffff !important;
-            font-family: 'Orbitron', sans-serif !important;
-            font-size: 3em !important;
-            font-weight: 900 !important;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.3);
-            letter-spacing: 2px;
-            margin-bottom: 10px !important;
+            font-family: 'Sora', sans-serif !important;
+            font-size: 2.5rem !important;
+            font-weight: 700 !important;
+            color: #0066FF !important;
+            letter-spacing: -0.02em !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.2 !important;
+            animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         h2 {
-            color: #ff00ff !important;
-            font-family: 'Orbitron', sans-serif !important;
-            font-size: 1.8em !important;
-            font-weight: 700 !important;
-            text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
-            letter-spacing: 1px;
-            border-bottom: 2px solid #00ff88;
-            padding-bottom: 8px;
+            font-family: 'Sora', sans-serif !important;
+            font-size: 1.875rem !important;
+            font-weight: 600 !important;
+            color: #3B82F6 !important;
+            letter-spacing: -0.015em !important;
+            margin-bottom: 0.75rem !important;
+            line-height: 1.3 !important;
         }
         
         h3 {
-            color: #00ffaa !important;
-            font-family: 'Orbitron', sans-serif !important;
-            font-weight: 700 !important;
-            text-shadow: 0 0 10px rgba(0, 255, 170, 0.4);
+            font-family: 'Sora', sans-serif !important;
+            font-size: 1.25rem !important;
+            font-weight: 600 !important;
+            color: #60A5FA !important;
+            letter-spacing: -0.01em !important;
         }
         
         p, span, div {
-            color: #d0d0e8;
+            color: #D1D5DB;
+            font-size: 1rem;
+            font-weight: 400;
         }
         
-        /* ============ TABS ============ */
+        /* =========== SIDEBAR =========== */
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #0F172A 0%, #1A1F47 100%);
+            border-right: 2px solid #334155;
+            box-shadow: inset -2px 0 0 rgba(3, 102, 255, 0.1);
+        }
+        
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+            color: #E8EAED !important;
+        }
+        
+        /* =========== MAIN CONTENT =========== */
+        [data-testid="stMainBlockContainer"] {
+            background: transparent;
+            padding: 2rem;
+        }
+        
+        /* =========== TABS =========== */
         .stTabs [data-baseweb="tab-list"] {
-            background: rgba(15, 0, 26, 0.8);
-            border-bottom: 2px solid #00ff88;
-            gap: 5px;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 2px solid #334155;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .stTabs [data-baseweb="tab-list"] button {
-            background: linear-gradient(135deg, rgba(26, 0, 51, 0.9), rgba(51, 0, 102, 0.9));
-            color: #b0b0d0;
-            border: 2px solid #444477;
+            background: linear-gradient(135deg, #1E293B, #293548);
+            color: #9CA3AF;
+            border: 2px solid #334155;
             border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            font-family: 'Space Mono', monospace;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: none;
+            letter-spacing: 0;
+            line-height: 1.5;
         }
         
         .stTabs [data-baseweb="tab-list"] button:hover {
-            border-color: #00ffaa;
-            color: #00ffaa;
-            box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+            border-color: #60A5FA;
+            color: #60A5FA;
+            box-shadow: 0 0 12px rgba(96, 165, 250, 0.2);
         }
         
         .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-            background: linear-gradient(135deg, #00ff88 0%, #00ffaa 50%, #00ff88 100%);
-            color: #0a0e27 !important;
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6), inset 0 0 10px rgba(0, 255, 136, 0.3);
-            font-weight: 700;
+            background: linear-gradient(135deg, #0066FF, #3B82F6);
+            color: #FFFFFF !important;
+            border: 2px solid #0066FF;
+            box-shadow: 0 6px 20px -4px rgba(0, 102, 255, 0.3);
+            font-weight: 600;
         }
         
-        /* ============ BUTTONS ============ */
+        /* =========== BUTTONS =========== */
         .stButton > button {
-            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
-            color: #0a0e27;
-            border: 2px solid #ff00ff;
-            border-radius: 12px;
-            padding: 12px 28px;
-            font-weight: 700;
-            font-size: 1.1em;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #0066FF 0%, #3B82F6 100%);
+            color: #FFFFFF;
+            border: 2px solid #0066FF;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            text-transform: none;
+            letter-spacing: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
             cursor: pointer;
+            min-height: 44px;
         }
         
         .stButton > button:hover {
-            background: linear-gradient(135deg, #00ffff 0%, #ff00ff 100%);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8), 0 0 50px rgba(255, 0, 255, 0.6);
-            transform: translateY(-3px) scale(1.08);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.4);
+            transform: translateY(-2px);
         }
         
         .stButton > button:active {
-            transform: translateY(-1px) scale(1.05);
+            transform: translateY(0) scale(0.98);
         }
         
-        /* ============ INPUT FIELDS ============ */
+        .stButton > button:disabled {
+            background: #9CA3AF;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* =========== INPUT FIELDS =========== */
         .stTextInput > div > div > input,
         .stNumberInput > div > div > input,
         .stSelectbox > div > div > select {
-            background-color: rgba(15, 0, 26, 0.9) !important;
-            color: #00ffaa !important;
-            border: 2px solid #00ff88 !important;
+            background-color: #1E293B !important;
+            color: #E8EAED !important;
+            border: 2px solid #334155 !important;
             border-radius: 8px !important;
-            padding: 12px !important;
-            font-family: 'Space Mono', monospace;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
+            padding: 0.75rem 1rem !important;
+            font-family: 'Inter', sans-serif !important;
+            transition: all 0.3s ease !important;
+            font-size: 1rem !important;
+            font-weight: 400 !important;
+        }
+        
+        .stTextInput > div > div > input::placeholder,
+        .stNumberInput > div > div > input::placeholder {
+            color: #6B7280 !important;
         }
         
         .stTextInput > div > div > input:focus,
         .stNumberInput > div > div > input:focus,
         .stSelectbox > div > div > select:focus {
-            border-color: #ff00ff !important;
-            box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.2), 0 0 20px rgba(255, 0, 255, 0.3);
-            color: #ff00ff !important;
+            border-color: #0066FF !important;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1) !important;
+            color: #E8EAED !important;
+            outline: none !important;
         }
         
-        /* ============ FILE UPLOADER ============ */
+        /* =========== FILE UPLOADER =========== */
         .stFileUploader {
-            border: 2px dashed #00ff88;
-            background: rgba(0, 255, 136, 0.05);
-            border-radius: 10px;
-            padding: 20px;
+            border: 2px dashed #334155;
+            background: rgba(3, 102, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
             transition: all 0.3s ease;
         }
         
         .stFileUploader:hover {
-            border-color: #ff00ff;
-            background: rgba(255, 0, 255, 0.1);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+            border-color: #0066FF;
+            background: rgba(3, 102, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
         }
         
-        /* ============ METRICS ============ */
+        /* =========== METRICS =========== */
         .stMetric {
-            background: linear-gradient(135deg, rgba(26, 0, 51, 0.95), rgba(51, 0, 76, 0.95));
-            padding: 20px;
+            background: linear-gradient(135deg, #1E293B 0%, #1A1F47 100%);
+            padding: 1.5rem;
             border-radius: 12px;
-            border-left: 5px solid #00ff88;
-            border-top: 2px solid #ff00ff;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 10px rgba(0, 255, 136, 0.05);
+            border: 2px solid #334155;
+            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
         
         .stMetric:hover {
-            border-left-color: #ff00ff;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3), inset 0 0 15px rgba(255, 0, 255, 0.1);
-            transform: translateY(-3px);
+            border-color: #0066FF;
+            box-shadow: 0 8px 16px rgba(0, 102, 255, 0.2);
+            transform: translateY(-4px);
         }
         
-        /* ============ MESSAGES ============ */
+        /* =========== MESSAGES =========== */
         .stSuccess {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 170, 0.15));
-            border-left: 4px solid #00ff88;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+            border-left: 4px solid #10B981;
             border-radius: 8px;
-            padding: 12px;
-            color: #00ffaa;
-            font-weight: 600;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+            padding: 1rem;
+            color: #6EE7B7;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .stInfo {
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(0, 200, 255, 0.15));
-            border-left: 4px solid #00ffff;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            border-left: 4px solid #3B82F6;
             border-radius: 8px;
-            padding: 12px;
-            color: #00ffff;
-            font-weight: 600;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            padding: 1rem;
+            color: #93C5FD;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .stWarning {
-            background: linear-gradient(135deg, rgba(255, 200, 0, 0.15), rgba(255, 150, 0, 0.15));
-            border-left: 4px solid #ffaa00;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+            border-left: 4px solid #F59E0B;
             border-radius: 8px;
-            padding: 12px;
-            color: #ffcc00;
-            font-weight: 600;
-            box-shadow: 0 0 15px rgba(255, 200, 0, 0.2);
+            padding: 1rem;
+            color: #FCD34D;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .stError {
-            background: linear-gradient(135deg, rgba(255, 0, 100, 0.15), rgba(255, 0, 150, 0.15));
-            border-left: 4px solid #ff0088;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+            border-left: 4px solid #EF4444;
             border-radius: 8px;
-            padding: 12px;
-            color: #ff00aa;
-            font-weight: 600;
-            box-shadow: 0 0 15px rgba(255, 0, 150, 0.2);
+            padding: 1rem;
+            color: #FCA5A5;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
-        /* ============ TABLES ============ */
+        /* =========== TABLES =========== */
         .stDataFrame {
-            background: linear-gradient(135deg, rgba(15, 0, 26, 0.9), rgba(26, 0, 51, 0.9));
-            border: 2px solid #00ff88;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+            background: #1A1F47;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
         
         .stDataFrame th {
-            background: linear-gradient(90deg, #ff00ff, #00ffff);
-            color: #0a0e27;
+            background: linear-gradient(90deg, #0066FF 0%, #3B82F6 100%);
+            color: #FFFFFF;
             font-weight: 700;
-            padding: 15px;
+            padding: 1rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
         }
         
         .stDataFrame td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
-            color: #d0d0e8;
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+            color: #D1D5DB;
+            font-size: 0.95rem;
         }
         
         .stDataFrame tr:hover {
-            background: rgba(0, 255, 136, 0.1);
+            background: rgba(0, 102, 255, 0.05);
         }
         
-        /* ============ EXPANDABLE SECTIONS ============ */
+        /* =========== EXPANDABLE SECTIONS =========== */
         .streamlit-expanderHeader {
-            background: linear-gradient(90deg, #1a0033, #330066);
-            border: 2px solid #00ff88;
+            background: linear-gradient(90deg, #1E293B, #1A1F47);
+            border: 2px solid #334155;
             border-radius: 8px;
-            color: #00ffaa !important;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #60A5FA !important;
+            font-weight: 600;
+            text-transform: none;
+            letter-spacing: 0;
+            padding: 1rem !important;
+            transition: all 0.3s ease;
         }
         
         .streamlit-expanderHeader:hover {
-            border-color: #ff00ff;
-            background: linear-gradient(90deg, #330066, #1a0033);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+            border-color: #0066FF;
+            background: linear-gradient(90deg, #1A1F47, #1E293B);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
         }
         
-        /* ============ SCROLLBAR ============ */
+        /* =========== SCROLLBAR =========== */
         ::-webkit-scrollbar {
             width: 12px;
+            height: 12px;
         }
         
         ::-webkit-scrollbar-track {
-            background: rgba(15, 0, 26, 0.8);
+            background: rgba(15, 23, 42, 0.5);
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #00ff88, #ff00ff);
+            background: linear-gradient(180deg, #0066FF, #3B82F6);
             border-radius: 6px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #00ffff, #ff00ff);
+            background: linear-gradient(180deg, #3B82F6, #60A5FA);
         }
         
-        /* ============ ANIMATIONS ============ */
-        @keyframes neon-glow {
-            0%, 100% {
-                text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-                color: #00ffff;
+        /* =========== ANIMATIONS =========== */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translate Y(-20px);
             }
-            50% {
-                text-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
-                color: #ff00ff;
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
         
         @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-            }
-            50% {
-                box-shadow: 0 0 30px rgba(255, 0, 255, 0.7);
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        /* Animation application */
+        h1 { animation: slideInDown 0.6s ease-out; }
+        h2 { animation: slideUp 0.5s ease-out 0.1s both; }
+        h3 { animation: fadeIn 0.4s ease-out 0.2s both; }
+        
+        /* =========== RESPONSIVE DESIGN =========== */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.875rem !important; }
+            h2 { font-size: 1.5rem !important; }
+            h3 { font-size: 1.125rem !important; }
+            
+            [data-testid="stMainBlockContainer"] { padding: 1rem; }
+            
+            .stButton > button,
+            .stTextInput > div > div > input,
+            .stSelectbox > div > div > select {
+                min-height: 48px;
+                font-size: 1rem;
             }
         }
         
-        h1 {
-            animation: neon-glow 3s ease-in-out infinite;
+        /* =========== FOCUS STATES (Accessibility) =========== */
+        button:focus-visible {
+            outline: 3px solid #0066FF;
+            outline-offset: 2px;
+        }
+        
+        input:focus-visible,
+        select:focus-visible {
+            outline: 3px solid #0066FF;
+            outline-offset: 2px;
+        }
+        
+        /* =========== REDUCED MOTION =========== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
         </style>
     """, unsafe_allow_html=True)
