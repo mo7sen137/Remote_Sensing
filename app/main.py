@@ -77,56 +77,179 @@ def setup_page_config():
             line-height: 1.6;
         }
         
+        /* =========== ANIMATED BACKGROUND =========== */
         html, body, [class*="css"] {
-            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
+            background: #0F172A !important;
+            animation: backgroundShift 15s ease-in-out infinite;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% {
+                background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
+            }
+            50% {
+                background: linear-gradient(225deg, #1A1F47 0%, #0F172A 50%, #1A1F47 100%);
+            }
         }
         
         .stApp {
-            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
+            background: #0F172A !important;
             color: #E8EAED;
+            position: relative;
+        }
+        
+        /* Animated shadow layer in background */
+        .stApp::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            animation: shadowFlow 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        @keyframes shadowFlow {
+            0%, 100% {
+                background: radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            }
+            25% {
+                background: radial-gradient(circle at 80% 30%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 20% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            }
+            50% {
+                background: radial-gradient(circle at 50% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            }
+            75% {
+                background: radial-gradient(circle at 30% 80%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
+                            radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+            }
+        }
+        
+        /* Subtle neon glow in background */
+        .stApp::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 75% 75%, rgba(0, 255, 200, 0.03) 0%, transparent 40%);
+            animation: neonPulse 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
         }
         
         /* =========== TYPOGRAPHY =========== */
         h1 {
             font-family: 'Sora', sans-serif !important;
-            font-size: 2.5rem !important;
-            font-weight: 700 !important;
+            font-size: 3.5rem !important;
+            font-weight: 800 !important;
             color: #0066FF !important;
             letter-spacing: -0.02em !important;
-            margin-bottom: 0.5rem !important;
-            line-height: 1.2 !important;
+            margin-bottom: 1rem !important;
+            line-height: 1.1 !important;
             animation: slideInDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-shadow: 0 0 20px rgba(0, 102, 255, 0.3), 0 0 40px rgba(0, 255, 136, 0.1);
+            position: relative;
+            z-index: 10;
         }
         
         h2 {
             font-family: 'Sora', sans-serif !important;
-            font-size: 1.875rem !important;
-            font-weight: 600 !important;
+            font-size: 2.25rem !important;
+            font-weight: 700 !important;
             color: #3B82F6 !important;
             letter-spacing: -0.015em !important;
-            margin-bottom: 0.75rem !important;
-            line-height: 1.3 !important;
+            margin-bottom: 1rem !important;
+            line-height: 1.2 !important;
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+            position: relative;
+            z-index: 10;
         }
         
         h3 {
             font-family: 'Sora', sans-serif !important;
-            font-size: 1.25rem !important;
-            font-weight: 600 !important;
+            font-size: 1.5rem !important;
+            font-weight: 700 !important;
             color: #60A5FA !important;
             letter-spacing: -0.01em !important;
+            position: relative;
+            z-index: 10;
         }
         
         p, span, div {
             color: #D1D5DB;
             font-size: 1rem;
             font-weight: 400;
+            position: relative;
+            z-index: 10;
         }
         
         /* =========== SIDEBAR =========== */
         [data-testid="stSidebar"] {
             background: linear-gradient(180deg, #0F172A 0%, #1A1F47 100%);
-            border-right: 2px solid #334155;
-            box-shadow: inset -2px 0 0 rgba(3, 102, 255, 0.1);
+            border-right: 3px solid rgba(0, 102, 255, 0.3);
+            box-shadow: inset -2px 0 15px rgba(0, 102, 255, 0.15), -5px 0 30px rgba(0, 102, 255, 0.1);
+            min-width: 280px !important;
+            max-width: 500px !important;
+        }
+        
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
+            color: #60A5FA !important;
+            padding: 1rem !important;
+        }
+        
+        /* Sidebar buttons/items styling */
+        [data-testid="stSidebar"] button {
+            width: 100% !important;
+            padding: 1rem !important;
+            margin: 0.5rem 0 !important;
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.15), rgba(59, 130, 246, 0.1)) !important;
+            color: #60A5FA !important;
+            border: 2px solid rgba(0, 102, 255, 0.3) !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            font-size: 1rem !important;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+            transition: all 0.3s ease;
+        }
+        
+        [data-testid="stSidebar"] button:hover {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(59, 130, 246, 0.2)) !important;
+            border-color: rgba(0, 255, 136, 0.5) !important;
+            color: #00FF88 !important;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) !important;
+        }
+        
+        [data-testid="stSidebar"] button[kind="primary"] {
+            background: linear-gradient(135deg, #0066FF, #3B82F6) !important;
+            border: 2px solid #0066FF !important;
+            color: white !important;
+        }
+        
+        [data-testid="stSidebar"] button[kind="primary"]:hover {
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.5) !important;
         }
         
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] {
@@ -137,44 +260,54 @@ def setup_page_config():
         [data-testid="stMainBlockContainer"] {
             background: transparent;
             padding: 2rem;
+            position: relative;
+            z-index: 10;
         }
         
         /* =========== TABS =========== */
         .stTabs [data-baseweb="tab-list"] {
-            background: rgba(15, 23, 42, 0.8);
-            border-bottom: 2px solid #334155;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid rgba(0, 102, 255, 0.2);
+            border-bottom: 3px solid rgba(0, 255, 136, 0.4);
+            gap: 1rem;
+            padding: 1.25rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(0, 255, 136, 0.1);
         }
         
         .stTabs [data-baseweb="tab-list"] button {
-            background: linear-gradient(135deg, #1E293B, #293548);
-            color: #9CA3AF;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(41, 53, 72, 0.9));
+            color: #93C5FD;
+            border: 2px solid rgba(51, 65, 85, 0.6);
+            border-radius: 12px;
+            padding: 1rem 1.75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            font-family: 'Sora', sans-serif;
             transition: all 0.3s ease;
-            text-transform: none;
-            letter-spacing: 0;
-            line-height: 1.5;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .stTabs [data-baseweb="tab-list"] button:hover {
-            border-color: #60A5FA;
-            color: #60A5FA;
-            box-shadow: 0 0 12px rgba(96, 165, 250, 0.2);
+            border-color: rgba(0, 255, 136, 0.6);
+            color: #00FF88;
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.2), rgba(59, 130, 246, 0.15));
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 10px rgba(0, 255, 136, 0.1);
+            transform: translateY(-2px);
         }
         
         .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
             background: linear-gradient(135deg, #0066FF, #3B82F6);
             color: #FFFFFF !important;
             border: 2px solid #0066FF;
-            box-shadow: 0 6px 20px -4px rgba(0, 102, 255, 0.3);
-            font-weight: 600;
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4), 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 10px rgba(0, 255, 136, 0.1);
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
         
         /* =========== BUTTONS =========== */
@@ -182,48 +315,54 @@ def setup_page_config():
             background: linear-gradient(135deg, #0066FF 0%, #3B82F6 100%);
             color: #FFFFFF;
             border: 2px solid #0066FF;
-            border-radius: 8px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            text-transform: none;
-            letter-spacing: 0;
+            border-radius: 12px;
+            padding: 1rem 1.75rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            font-family: 'Sora', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.3), 0 0 15px rgba(0, 255, 136, 0.1);
             cursor: pointer;
-            min-height: 44px;
+            min-height: 48px;
+            position: relative;
+            overflow: hidden;
         }
         
         .stButton > button:hover {
             background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
-            box-shadow: 0 8px 20px rgba(0, 102, 255, 0.4);
-            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 102, 255, 0.5), 0 0 25px rgba(0, 255, 136, 0.3);
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.6);
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
         
         .stButton > button:active {
-            transform: translateY(0) scale(0.98);
+            transform: translateY(-1px) scale(0.98);
         }
         
         .stButton > button:disabled {
             background: #9CA3AF;
             opacity: 0.6;
             cursor: not-allowed;
+            box-shadow: none;
         }
         
         /* =========== INPUT FIELDS =========== */
         .stTextInput > div > div > input,
         .stNumberInput > div > div > input,
         .stSelectbox > div > div > select {
-            background-color: #1E293B !important;
+            background-color: rgba(30, 41, 59, 0.8) !important;
             color: #E8EAED !important;
-            border: 2px solid #334155 !important;
-            border-radius: 8px !important;
-            padding: 0.75rem 1rem !important;
+            border: 2px solid rgba(51, 65, 85, 0.6) !important;
+            border-radius: 12px !important;
+            padding: 0.875rem 1rem !important;
             font-family: 'Inter', sans-serif !important;
             transition: all 0.3s ease !important;
             font-size: 1rem !important;
             font-weight: 400 !important;
+            min-height: 44px;
         }
         
         .stTextInput > div > div > input::placeholder,
@@ -235,81 +374,115 @@ def setup_page_config():
         .stNumberInput > div > div > input:focus,
         .stSelectbox > div > div > select:focus {
             border-color: #0066FF !important;
-            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1) !important;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2), 0 0 20px rgba(0, 255, 136, 0.2) !important;
             color: #E8EAED !important;
             outline: none !important;
+            background-color: rgba(0, 102, 255, 0.05) !important;
         }
         
         /* =========== FILE UPLOADER =========== */
         .stFileUploader {
-            border: 2px dashed #334155;
-            background: rgba(3, 102, 255, 0.05);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border: 3px dashed rgba(0, 102, 255, 0.4);
+            background: rgba(0, 102, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem;
             transition: all 0.3s ease;
         }
         
         .stFileUploader:hover {
-            border-color: #0066FF;
-            background: rgba(3, 102, 255, 0.1);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+            border-color: rgba(0, 255, 136, 0.6);
+            background: rgba(0, 255, 136, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 255, 136, 0.2), inset 0 0 15px rgba(0, 255, 136, 0.05);
         }
         
         /* =========== METRICS =========== */
         .stMetric {
-            background: linear-gradient(135deg, #1E293B 0%, #1A1F47 100%);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 2px solid #334155;
-            box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(26, 31, 71, 0.95));
+            padding: 1.75rem;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 102, 255, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 0 1px rgba(0, 255, 136, 0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .stMetric::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #0066FF, #00FF88, #3B82F6);
+            border-radius: 16px 16px 0 0;
         }
         
         .stMetric:hover {
-            border-color: #0066FF;
-            box-shadow: 0 8px 16px rgba(0, 102, 255, 0.2);
-            transform: translateY(-4px);
+            border-color: rgba(0, 255, 136, 0.5);
+            box-shadow: 0 12px 30px rgba(0, 102, 255, 0.3), 0 0 20px rgba(0, 255, 136, 0.2);
+            transform: translateY(-6px);
+        }
+        
+        .stMetric:hover::before {
+            animation: slideInRight 0.5s ease-out;
+        }
+        
+        /* =========== DIVIDERS =========== */
+        hr {
+            border-color: rgba(0, 102, 255, 0.2) !important;
+            border-top: 2px solid;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+            box-shadow: 0 0 10px rgba(0, 102, 255, 0.1);
         }
         
         /* =========== MESSAGES =========== */
         .stSuccess {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
-            border-left: 4px solid #10B981;
-            border-radius: 8px;
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08));
+            border-left: 5px solid #10B981;
+            border-radius: 12px;
+            padding: 1.25rem;
             color: #6EE7B7;
-            font-weight: 500;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2), inset 0 0 1px rgba(16, 185, 129, 0.2);
+            animation: slideInUp 0.4s ease-out;
         }
         
         .stInfo {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
-            border-left: 4px solid #3B82F6;
-            border-radius: 8px;
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.08));
+            border-left: 5px solid #3B82F6;
+            border-radius: 12px;
+            padding: 1.25rem;
             color: #93C5FD;
-            font-weight: 500;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2), inset 0 0 1px rgba(59, 130, 246, 0.2);
+            animation: slideInUp 0.4s ease-out;
         }
         
         .stWarning {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
-            border-left: 4px solid #F59E0B;
-            border-radius: 8px;
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.08));
+            border-left: 5px solid #F59E0B;
+            border-radius: 12px;
+            padding: 1.25rem;
             color: #FCD34D;
-            font-weight: 500;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2), inset 0 0 1px rgba(245, 158, 11, 0.2);
+            animation: slideInUp 0.4s ease-out 0.1s both;
         }
         
         .stError {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
-            border-left: 4px solid #EF4444;
-            border-radius: 8px;
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08));
+            border-left: 5px solid #EF4444;
+            border-radius: 12px;
+            padding: 1.25rem;
             color: #FCA5A5;
-            font-weight: 500;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2), inset 0 0 1px rgba(239, 68, 68, 0.2);
+            animation: slideInUp 0.4s ease-out 0.2s both;
         }
         
         /* =========== TABLES =========== */
