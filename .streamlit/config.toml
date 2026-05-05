@@ -1,0 +1,14 @@
+# Streamlit Configuration
+
+[theme]
+primaryColor = "#e94560"
+backgroundColor = "#16213e"
+secondaryBackgroundColor = "#0f3460"
+textColor = "#eaeaea"
+font = "sans serif"
+
+[client]
+showErrorDetails = true
+
+[logger]
+level = "info"
