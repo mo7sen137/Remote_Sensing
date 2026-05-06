@@ -40,21 +40,35 @@ def setup_page_config():
     # Custom CSS for dark theme (Cyberpunk style)
     st.markdown("""
         <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
         /* Main background */
         .stApp {
-            background-color: #0a0e27;
+            background-color: #0a0e27 !important;
+        }
+        
+        html, body {
+            background-color: #0a0e27 !important;
         }
         
         /* Sidebar */
-        [data-testid="stSidebar"] {
-            background-color: #1a1f3a;
+        section[data-testid="stSidebar"] {
+            background-color: #1a1f3a !important;
             border-right: 2px solid #e94560;
         }
         
-        /* Main content */
-        [data-testid="stMainBlockContainer"] {
-            background-color: #0a0e27;
-            color: #eaeaea;
+        /* Main content area */
+        section[data-testid="stMainBlockContainer"] {
+            background-color: #0a0e27 !important;
+            color: #eaeaea !important;
+        }
+        
+        .main {
+            background-color: #0a0e27 !important;
+            color: #eaeaea !important;
         }
         
         /* Headers */
