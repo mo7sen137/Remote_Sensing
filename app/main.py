@@ -53,6 +53,21 @@ def setup_page_config():
             50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
         }
         
+        @keyframes floatSatellite {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.25; }
+        }
+        
+        @keyframes floatRadar {
+            0%, 100% { transform: translateX(0px) rotate(0deg); opacity: 0.1; }
+            50% { transform: translateX(30px) rotate(180deg); opacity: 0.2; }
+        }
+        
+        @keyframes rotateAntenna {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         :root {
             --primary: #8B5CF6;
             --accent: #A78BFA;
@@ -68,11 +83,78 @@ def setup_page_config():
             --text-secondary: #B0B0C0;
         }
         
+        /* Background icons container */
+        .stApp::before,
+        .stApp::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
         /* Main animated background */
         .stApp {
             background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14, #250F3E, #0F0F1E);
             background-size: 400% 400%;
             animation: gradientFlow 15s ease infinite;
+            overflow: hidden;
+        }
+        
+        /* Background SVG icons */
+        [data-testid="stAppViewBlockContainer"]::before {
+            content: '';
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><g opacity="0.15"><circle cx="200" cy="200" r="150" fill="none" stroke="%238B5CF6" stroke-width="2"/><circle cx="200" cy="200" r="100" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="200" cy="200" r="50" fill="none" stroke="%238B5CF6" stroke-width="1"/><path d="M 200 50 L 200 150 M 350 200 L 250 200 M 200 350 L 200 250 M 50 200 L 150 200" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="200" cy="200" r="8" fill="%238B5CF6"/></g></svg>') no-repeat center;
+            animation: rotateAntenna 30s linear infinite;
+            z-index: 0;
+        }
+        
+        [data-testid="stAppViewBlockContainer"]::after {
+            content: '';
+            position: fixed;
+            bottom: -15%;
+            left: -5%;
+            width: 350px;
+            height: 350px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g opacity="0.12"><rect x="50" y="30" width="100" height="120" fill="none" stroke="%238B5CF6" stroke-width="2"/><rect x="55" y="35" width="90" height="30" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><path d="M 80 65 L 80 140 M 120 65 L 120 140" stroke="%238B5CF6" stroke-width="1"/><circle cx="70" cy="25" r="4" fill="%238B5CF6"/><circle cx="130" cy="25" r="4" fill="%238B5CF6"/><path d="M 85 145 Q 100 160 115 145" stroke="%238B5CF6" stroke-width="1.5" fill="none"/></g></svg>') no-repeat center;
+            animation: rotateAntenna 40s linear infinite reverse;
+            z-index: 0;
+        }
+        
+        /* Satellite icon - top left */
+        [data-testid="stMainBlockContainer"]::before {
+            content: '';
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            width: 300px;
+            height: 300px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><g opacity="0.13"><rect x="100" y="80" width="100" height="100" rx="10" fill="none" stroke="%238B5CF6" stroke-width="2"/><path d="M 80 130 L 220 130 M 130 60 L 130 200 M 80 170 L 220 170" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="150" cy="130" r="15" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="70" y="120" width="20" height="20" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="210" y="120" width="20" height="20" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="135" y="40" width="30" height="15" fill="none" stroke="%238B5CF6" stroke-width="1.5"/></g></svg>') no-repeat center;
+            animation: floatSatellite 8s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        /* Radar icon - bottom right */
+        [data-testid="stMainBlockContainer"]::after {
+            content: '';
+            position: fixed;
+            bottom: 8%;
+            right: 3%;
+            width: 280px;
+            height: 280px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g opacity="0.12"><path d="M 100 100 m -80 0 a 80 80 0 1 0 160 0 a 80 80 0 1 0 -160 0" fill="none" stroke="%238B5CF6" stroke-width="1" opacity="0.5"/><path d="M 100 100 m -50 0 a 50 50 0 1 0 100 0 a 50 50 0 1 0 -100 0" fill="none" stroke="%238B5CF6" stroke-width="1" opacity="0.6"/><path d="M 100 100 m -25 0 a 25 25 0 1 0 50 0 a 25 25 0 1 0 -50 0" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><line x1="100" y1="100" x2="100" y2="20" stroke="%238B5CF6" stroke-width="1.5" opacity="0.8"/><path d="M 100 100 L 160 40 L 140 60 Z" fill="%238B5CF6" opacity="0.4"/></g></svg>') no-repeat center;
+            animation: floatRadar 10s ease-in-out infinite;
+            z-index: 0;
+            pointer-events: none;
         }
         
         /* Sidebar */
@@ -80,6 +162,7 @@ def setup_page_config():
             background: linear-gradient(180deg, #1A1A2E 0%, #252541 100%);
             border-right: 2px solid var(--primary);
             box-shadow: inset -10px 0 30px rgba(139, 92, 246, 0.1);
+            z-index: 10;
         }
         
         /* Main content container */
@@ -87,12 +170,15 @@ def setup_page_config():
             background: linear-gradient(135deg, rgba(15, 15, 30, 0.8), rgba(26, 10, 46, 0.8));
             color: var(--text-primary);
             border-radius: 0;
+            z-index: 1;
+            position: relative;
         }
         
         [data-testid="stAppViewBlockContainer"] {
             background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14);
             background-size: 400% 400%;
             animation: gradientFlow 15s ease infinite;
+            z-index: 0;
         }
         
         /* Headers - Clean Typography */
@@ -103,6 +189,8 @@ def setup_page_config():
             line-height: 1.2 !important;
             margin-bottom: 16px !important;
             text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            position: relative;
+            z-index: 2;
         }
         
         h2 {
@@ -111,6 +199,8 @@ def setup_page_config():
             font-size: 24px !important;
             line-height: 1.3 !important;
             margin-bottom: 12px !important;
+            position: relative;
+            z-index: 2;
         }
         
         h3 {
@@ -119,6 +209,8 @@ def setup_page_config():
             font-size: 18px !important;
             line-height: 1.4 !important;
             margin-bottom: 8px !important;
+            position: relative;
+            z-index: 2;
         }
         
         /* Body text */
@@ -126,6 +218,8 @@ def setup_page_config():
             color: var(--text-primary) !important;
             font-size: 14px !important;
             line-height: 1.6 !important;
+            position: relative;
+            z-index: 2;
         }
         
         /* Basic styles */
@@ -139,6 +233,8 @@ def setup_page_config():
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
             margin: 24px 0;
+            position: relative;
+            z-index: 2;
         }
         
         /* Buttons */
@@ -151,6 +247,8 @@ def setup_page_config():
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+            position: relative;
+            z-index: 2;
         }
         
         .stButton>button:hover {
@@ -169,6 +267,8 @@ def setup_page_config():
             box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
         }
         
         .card:hover {
@@ -197,6 +297,8 @@ def setup_page_config():
             padding: 16px;
             box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
         }
         
         [data-testid="stMetric"]:hover {
@@ -207,6 +309,8 @@ def setup_page_config():
         /* Text styling */
         [data-testid="stMarkdownContainer"] {
             color: var(--text-primary);
+            position: relative;
+            z-index: 2;
         }
         
         /* Expander */
@@ -214,12 +318,16 @@ def setup_page_config():
             border: 1px solid var(--border);
             border-radius: 8px;
             background: linear-gradient(135deg, rgba(26, 26, 46, 0.5), rgba(37, 37, 65, 0.5));
+            position: relative;
+            z-index: 2;
         }
         
         /* File uploader */
         [data-testid="stFileUploadDropzone"] {
             border: 2px dashed var(--primary);
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.02));
+            position: relative;
+            z-index: 2;
         }
         
         /* Success message */
@@ -228,6 +336,8 @@ def setup_page_config():
             color: #10B981;
             border: 1px solid #10B981;
             border-radius: 8px;
+            position: relative;
+            z-index: 2;
         }
         
         /* Warning message */
@@ -236,6 +346,29 @@ def setup_page_config():
             color: #F59E0B;
             border: 1px solid #F59E0B;
             border-radius: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Team member card */
+        .team-member {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .team-member:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1));
+            border-color: rgba(139, 92, 246, 0.6);
+            transform: translateX(4px);
         }
         </style>
     """, unsafe_allow_html=True)
@@ -724,9 +857,33 @@ def main():
         """)
         
         st.markdown("---")
-        st.markdown("### About")
-        st.text("Remote Sensing Project")
-        st.text("May 2026")
+        st.markdown("### Team Members")
+        
+        team_members = [
+            "Karim Mustafa Dasouki",
+            "Mohamed Abd El-Moneim Mohamed Rashad",
+            "Mohsen Mohamed El-Sayed",
+            "Karim Hesham Mansour",
+            "Abd El-Rahman Medhat Imam",
+            "Mohamed Alaa El-Din Karam El-Sham",
+            "Hussam Hassan Mahmoud Abd El-Aziz"
+        ]
+        
+        for member in team_members:
+            st.markdown(f"""
+            <div class='team-member'>
+            👤 {member}
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown("""
+        <div style='text-align: center; color: var(--text-secondary); font-size: 12px; padding: 12px 0;'>
+            <p style='margin: 4px 0;'><b>Remote Sensing</b></p>
+            <p style='margin: 4px 0;'>Land Classification System</p>
+            <p style='margin: 4px 0;'>May 2026</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Main content
     if page == "Home":
