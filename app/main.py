@@ -110,7 +110,7 @@ def setup_page_config():
                         radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
             animation: shadowFlow 20s ease-in-out infinite;
             pointer-events: none;
-            z-index: 1;
+            z-index: -10;
         }
         
         @keyframes shadowFlow {
@@ -145,7 +145,7 @@ def setup_page_config():
                 radial-gradient(circle at 75% 75%, rgba(0, 255, 200, 0.03) 0%, transparent 40%);
             animation: neonPulse 12s ease-in-out infinite;
             pointer-events: none;
-            z-index: 0;
+            z-index: -9;
         }
         
         @keyframes neonPulse {
@@ -284,9 +284,6 @@ def setup_page_config():
             text-transform: uppercase;
             letter-spacing: 0.05em;
             min-height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .stTabs [data-baseweb="tab-list"] button:hover {
@@ -744,7 +741,7 @@ def setup_page_config():
         
         /* =========== LOADING & ASYNC STATES =========== */
         .spinner {
-            animate: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
             border: 3px solid rgba(0, 102, 255, 0.1);
             border-radius: 50%;
             border-top: 3px solid #0066FF;
