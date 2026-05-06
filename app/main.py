@@ -79,84 +79,12 @@ def setup_page_config():
         
         /* =========== ANIMATED BACKGROUND =========== */
         html, body, [class*="css"] {
-            background: #0F172A !important;
-            animation: backgroundShift 15s ease-in-out infinite;
-        }
-        
-        @keyframes backgroundShift {
-            0%, 100% {
-                background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
-            }
-            50% {
-                background: linear-gradient(225deg, #1A1F47 0%, #0F172A 50%, #1A1F47 100%);
-            }
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
         }
         
         .stApp {
-            background: #0F172A !important;
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
             color: #E8EAED;
-            position: relative;
-        }
-        
-        /* Animated shadow layer in background */
-        .stApp::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            animation: shadowFlow 20s ease-in-out infinite;
-            pointer-events: none;
-            z-index: -10;
-        }
-        
-        @keyframes shadowFlow {
-            0%, 100% {
-                background: radial-gradient(circle at 20% 50%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                            radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            }
-            25% {
-                background: radial-gradient(circle at 80% 30%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                            radial-gradient(circle at 20% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            }
-            50% {
-                background: radial-gradient(circle at 50% 20%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                            radial-gradient(circle at 50% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            }
-            75% {
-                background: radial-gradient(circle at 30% 80%, rgba(0, 102, 255, 0.15) 0%, transparent 50%),
-                            radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
-            }
-        }
-        
-        /* Subtle neon glow in background */
-        .stApp::after {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 75% 75%, rgba(0, 255, 200, 0.03) 0%, transparent 40%);
-            animation: neonPulse 12s ease-in-out infinite;
-            pointer-events: none;
-            z-index: -9;
-        }
-        
-        @keyframes neonPulse {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.6;
-                transform: scale(1.05);
-            }
         }
         
         /* =========== TYPOGRAPHY =========== */
