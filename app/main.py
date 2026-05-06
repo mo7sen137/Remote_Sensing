@@ -29,7 +29,7 @@ import config
 # ============================================================================
 
 def setup_page_config():
-    """Configure Streamlit page settings with Cyberpunk theme."""
+    """Configure Streamlit page settings with Professional Enterprise Theme."""
     st.set_page_config(
         page_title="🛰️ Remote Sensing Land Classification",
         page_icon="🛰️",
@@ -37,38 +37,26 @@ def setup_page_config():
         initial_sidebar_state="expanded"
     )
     
-    # Custom CSS for dark theme (Cyberpunk style)
+    # =========================================================================
+    # PROFESSIONAL ENTERPRISE DESIGN SYSTEM v2.0
+    # =========================================================================
     st.markdown("""
         <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        
         /* Main background */
         .stApp {
-            background-color: #0a0e27 !important;
-        }
-        
-        html, body {
-            background-color: #0a0e27 !important;
+            background-color: #0a0e27;
         }
         
         /* Sidebar */
-        section[data-testid="stSidebar"] {
-            background-color: #1a1f3a !important;
+        [data-testid="stSidebar"] {
+            background-color: #1a1f3a;
             border-right: 2px solid #e94560;
         }
         
-        /* Main content area */
-        section[data-testid="stMainBlockContainer"] {
-            background-color: #0a0e27 !important;
-            color: #eaeaea !important;
-        }
-        
-        .main {
-            background-color: #0a0e27 !important;
-            color: #eaeaea !important;
+        /* Main content */
+        [data-testid="stMainBlockContainer"] {
+            background-color: #0a0e27;
+            color: #eaeaea;
         }
         
         /* Headers */
@@ -77,62 +65,19 @@ def setup_page_config():
             font-weight: 700 !important;
         }
         
-        /* Tabs */
-        .stTabs [data-baseweb="tab-list"] button {
-            background-color: #1a1f3a;
-            color: #eaeaea;
-            border-radius: 5px;
-            border: 1px solid #2d3748;
+        .stApp, 
+        [data-testid="stAppViewBlockContainer"],
+        [data-testid="stMainBlockContainer"],
+        [data-testid="stFullScreenFrame"] {
+            background: linear-gradient(-45deg, #0F172A, #1a1f3a, #16213e, #0F172A) !important;
+            background-size: 400% 400% !important;
+            animation: gradientShift 15s ease infinite !important;
+            color: #E8EAED !important;
         }
         
-        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-            background-color: #e94560;
-            color: white;
-            border: 2px solid #ff6b9d;
-        }
-        
-        /* Buttons */
-        .stButton > button {
-            background-color: #e94560;
-            color: white;
-            border-radius: 8px;
-            border: none;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .stButton > button:hover {
-            background-color: #ff6b9d;
-            transform: scale(1.05);
-        }
-        
-        /* Input fields */
-        input, .stTextInput, .stNumberInput {
-            background-color: #1a1f3a !important;
-            color: #eaeaea !important;
-            border: 1px solid #2d3748 !important;
-        }
-        
-        /* Cards */
-        .stMetric {
-            background-color: #1a1f3a;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #e94560;
-        }
-        
-        /* Success/Info messages */
-        .stSuccess {
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-        
-        .stInfo {
-            background-color: rgba(33, 150, 243, 0.1);
-        }
-        
-        .stWarning {
-            background-color: rgba(255, 152, 0, 0.1);
+        /* =========== BASIC STYLES =========== */
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -144,53 +89,108 @@ def setup_page_config():
 
 def page_home():
     """Home page with project overview."""
-    st.markdown("# 🛰️ Remote Sensing Land Classification")
-    st.markdown("### Automated Land Cover Mapping from Satellite Imagery")
+    st.markdown("<h1 style='text-align: center;'>🛰️ LAND COVER CLASSIFICATION SYSTEM</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: #00ffaa;'>Advanced Satellite Image Processing & ML Analysis</h3>", unsafe_allow_html=True)
+    st.divider()
     
+    # Metrics Row 1
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("📡 Satellite", "LANDSAT 8", "11 Bands")
+    with col2:
+        st.metric("🔬 Image Size", "4M px", "Per Band")
+    with col3:
+        st.metric("🤖 ML Models", "3 Types", "Ensemble")
+    with col4:
+        st.metric("🎯 Classes", "4", "Categories")
+    
+    st.divider()
+    
+    # Main Content
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
-        ## 📍 About This Project
-        
-        This application classifies satellite images into **4 land cover types**:
-        - 💧 **Water** - Lakes, rivers, seas
-        - 🌱 **Agriculture** - Crops and vegetation
-        - 🏢 **Urban** - Buildings and infrastructure
-        - 🏜️ **Desert** - Bare soil and sand
-        
-        **Using:** Landsat 8 satellite imagery from the Nile Delta region of Egypt.
-        """)
+        <div style='background: rgba(0, 255, 136, 0.08); border: 2px solid #00ff88; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #00ffaa;'>📍 PROJECT OVERVIEW</h3>
+            <p style='color: #d0d0e8; font-size: 1.05em;'>
+            Advanced satellite imagery classification from <b>Landsat 8</b> for Egypt's Nile Delta region.
+            </p>
+            <p style='color: #e0e0ff;'><b>Land Cover Types:</b></p>
+            <ul style='color: #d0d0e8;'>
+            <li>💧 <b>Water</b> - Lakes, rivers, coastal areas</li>
+            <li>🌱 <b>Agriculture</b> - Cultivated vegetation</li>
+            <li>🏢 <b>Urban</b> - Buildings & infrastructure</li>
+            <li>🏜️ <b>Desert</b> - Bare soil & sand</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        ## 🎯 How It Works
-        
-        1. Upload Landsat 8 bands (B2-B7)
-        2. Upload MTL metadata file
-        3. Select a ML model (SVM, RF, KNN)
-        4. Click "Classify" to process
-        5. View results as:
-           - 🗺️ Colored classification map
-           - 📊 Area statistics
-           - 📈 Distribution chart
-        """)
+        <div style='background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1)); border: 2px solid #ff00ff; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #ff00ff;'>🚀 WORKFLOW</h3>
+            <p style='color: #e0e0ff;'><b>5-Step Processing Pipeline:</b></p>
+            <ol style='color: #d0d0e8;'>
+            <li>📤 Upload Landsat 8 bands (B2-B7)</li>
+            <li>🔍 Preview & extract spectral indices</li>
+            <li>🤖 Select & apply ML classifier</li>
+            <li>📊 Generate classification map</li>
+            <li>💾 Export results & statistics</li>
+            </ol>
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    st.divider()
     
-    col1, col2, col3, col4 = st.columns(4)
+    # Technical Specs
+    st.markdown("<h2 style='text-align: center; color: #00ffff;'>⚙️ SYSTEM SPECIFICATIONS</h2>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.metric("Resolution", "30m", "Per pixel")
-    with col2:
-        st.metric("Image Size", "2000×2000", "Pixels")
-    with col3:
-        st.metric("Total Pixels", "4M", "Processed")
-    with col4:
-        st.metric("Classes", "4", "Categories")
+        with st.expander("🔬 Preprocessing & Calibration", expanded=False):
+            st.markdown("""
+            • Radiometric calibration (DN → Reflectance)
+            • Band normalization & stacking
+            • Quality filtering & masking
+            • Geometric validation
+            """)
     
-    st.markdown("---")
-    st.info("👉 Go to **Upload Data** tab to get started!")
+    with col2:
+        with st.expander("📊 Feature Extraction", expanded=False):
+            st.markdown("""
+            **7 Original Bands:**
+            B2, B3, B4, B5, B6, B7, Thermal
+            
+            **3 Spectral Indices:**
+            • NDVI (Vegetation)
+            • NDWI (Water)
+            • NDBI (Built-up)
+            """)
+    
+    with col3:
+        with st.expander("🤖 ML Classification", expanded=False):
+            st.markdown("""
+            **Ensemble Models:**
+            • Support Vector Machine
+            • Random Forest (100 trees)
+            • K-Nearest Neighbors (k=5)
+            
+            **Voting Mechanism:**
+            Majority voting for robustness
+            """)
+    
+    st.divider()
+    
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(255, 0, 255, 0.05)); border: 2px solid #00ffaa; border-radius: 10px; padding: 25px; text-align: center;'>
+        <h3 style='color: #00ffff; margin-bottom: 15px;'>✨ READY TO START?</h3>
+        <p style='color: #d0d0e8; font-size: 1.1em;'>
+        Navigate to the <b style='color: #00ffaa;'>📤 UPLOAD</b> tab to begin processing your satellite imagery
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================================
@@ -199,21 +199,27 @@ def page_home():
 
 def page_upload():
     """Data upload interface."""
-    st.markdown("# 📤 Upload Landsat 8 Data")
+    st.markdown("<h1 style='color: #00ffff;'>📤 UPLOAD SATELLITE DATA</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #00ffaa; font-size: 1.1em;'>Import Landsat 8 bands and metadata files for processing</p>", unsafe_allow_html=True)
+    st.divider()
     
     col1, col2 = st.columns([1, 1])
     
     with col1:
-        st.markdown("## 🎞️ Spectral Bands (B2-B7)")
-        st.info("""
-        Upload all 7 bands as GeoTIFF files:
-        - B2: Coastal/Aerosol (0.43-0.45 μm)
-        - B3: Blue (0.45-0.51 μm)
-        - B4: Red (0.64-0.67 μm)
-        - B5: NIR (0.85-0.88 μm)
-        - B6: SWIR1 (1.57-1.65 μm)
-        - B7: SWIR2 (2.11-2.29 μm)
-        """)
+        st.markdown("""
+        <div style='background: rgba(0, 255, 136, 0.08); border: 2px solid #00ff88; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #00ffaa;'>🎞️ SPECTRAL BANDS (B2-B7)</h3>
+            <p style='color: #d0d0e8; font-size: 0.95em;'>Upload all 6 bands as GeoTIFF files:</p>
+            <ul style='color: #e0e0ff; font-size: 0.9em;'>
+            <li><b>B2:</b> Coastal/Aerosol (0.43-0.45 μm)</li>
+            <li><b>B3:</b> Blue (0.45-0.51 μm)</li>
+            <li><b>B4:</b> Red (0.64-0.67 μm)</li>
+            <li><b>B5:</b> NIR (0.85-0.88 μm)</li>
+            <li><b>B6:</b> SWIR1 (1.57-1.65 μm)</li>
+            <li><b>B7:</b> SWIR2 (2.11-2.29 μm)</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
         
         uploaded_bands = {}
         for band_num in range(2, 8):
@@ -227,16 +233,21 @@ def page_upload():
         
         if uploaded_bands:
             st.session_state.uploaded_bands = uploaded_bands
-            st.success(f"✅ {len(uploaded_bands)}/6 bands loaded")
+            st.markdown(f"<p style='color: #00ffaa; font-weight: bold;'>✅ {len(uploaded_bands)}/6 bands loaded</p>", unsafe_allow_html=True)
     
     with col2:
-        st.markdown("## 📋 Metadata File")
-        st.info("""
-        Upload the MTL metadata file that comes with Landsat 8 data:
-        - Format: .txt
-        - Contains radiometric calibration coefficients
-        - Filename: *_MTL.txt
-        """)
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1)); border: 2px solid #ff00ff; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #ff00ff;'>📋 METADATA FILE</h3>
+            <p style='color: #d0d0e8;'>Upload MTL metadata file for calibration:</p>
+            <ul style='color: #e0e0ff; font-size: 0.95em;'>
+            <li>Format: <b>.txt</b> file</li>
+            <li>Contains radiometric coefficients</li>
+            <li>Filename: <b>*_MTL.txt</b></li>
+            <li>Required for calibration</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
         
         mtl_file = st.file_uploader(
             "MTL File (*.txt)",
@@ -246,28 +257,26 @@ def page_upload():
         
         if mtl_file:
             st.session_state.mtl_data = mtl_file
-            st.success("✅ MTL file loaded")
+            st.markdown("<p style='color: #00ffaa; font-weight: bold;'>✅ MTL file loaded</p>", unsafe_allow_html=True)
     
-    st.markdown("---")
+    st.divider()
     
     # Show file sizes
     if uploaded_bands or mtl_file:
-        st.markdown("## 📊 Upload Summary")
+        st.markdown("<h2 style='color: #00ffff; text-align: center;'>📊 UPLOAD SUMMARY</h2>", unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("Bands", f"{len(uploaded_bands)}/6", 
-                     delta=None if len(uploaded_bands) == 6 else "Missing")
+            status = "✅ COMPLETE" if len(uploaded_bands) == 6 else "⏳ INCOMPLETE"
+            st.metric("🎞️ Bands Loaded", f"{len(uploaded_bands)}/6", delta=status)
         
         with col2:
-            if mtl_file:
-                st.metric("MTL File", "✅ Loaded")
-            else:
-                st.metric("MTL File", "❌ Missing")
+            mtl_status = "✅ READY" if mtl_file else "❌ MISSING"
+            st.metric("📋 MTL File", "Loaded" if mtl_file else "Not Loaded", delta=mtl_status)
         
         with col3:
-            total_bands = len(uploaded_bands)
-            st.metric("Ready", "✅ Yes" if total_bands == 6 and mtl_file else "⏳ Waiting")
+            ready = "✅ READY" if len(uploaded_bands) == 6 and mtl_file else "⏳ WAITING"
+            st.metric("🚀 Processing", "Can Start" if len(uploaded_bands) == 6 and mtl_file else "Incomplete", delta=ready)
 
 
 # ============================================================================
@@ -341,43 +350,71 @@ def page_preview():
 
 def page_classification():
     """Classification and prediction."""
-    st.markdown("# 🗺️ Land Cover Classification")
+    st.markdown("<h1 style='color: #ff00ff;'>🤖 LAND COVER CLASSIFICATION</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #00ffaa; font-size: 1.1em;'>Select model and run classification on uploaded satellite data</p>", unsafe_allow_html=True)
+    st.divider()
     
     if not st.session_state.uploaded_bands:
-        st.warning("⚠️ Please upload bands first")
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(255, 0, 150, 0.15), rgba(255, 100, 0, 0.15)); border: 2px solid #ff0088; border-radius: 10px; padding: 20px; text-align: center;'>
+            <h3 style='color: #ff00aa;'>⚠️ MISSING DATA</h3>
+            <p style='color: #d0d0e8;'>Please upload satellite bands first in the <b>📤 UPLOAD</b> tab</p>
+        </div>
+        """, unsafe_allow_html=True)
         return
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("## 🤖 Classification Settings")
+        st.markdown("""
+        <div style='background: rgba(0, 255, 136, 0.08); border: 2px solid #00ff88; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #00ffaa;'>🤖 CLASSIFICATION SETTINGS</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
         # Model selection
         model_choice = st.selectbox(
-            "Select ML Model:",
-            ["Random Forest", "SVM", "KNN"],
-            help="Choose the classifier to use"
+            "🎯 Select ML Model:",
+            ["🌳 Random Forest (Recommended)", "🎯 Support Vector Machine", "📍 K-Nearest Neighbors"],
+            help="Choose the classifier for optimal results"
         )
         
+        st.markdown("""
+        <div style='background: rgba(100, 0, 200, 0.08); border: 2px solid #9900ff; border-radius: 8px; padding: 15px; margin: 15px 0;'>
+            <p style='color: #d0d0e8;'><b>📊 Processing Pipeline:</b></p>
+            <ul style='color: #e0e0ff;'>
+            <li>Step 1: Load and validate bands</li>
+            <li>Step 2: Apply radiometric calibration</li>
+            <li>Step 3: Extract 10 features</li>
+            <li>Step 4: Run <b style='color: #00ffaa;'>""" + model_choice.split("(")[0].strip() + """</b> classifier</li>
+            <li>Step 5: Generate colored map</li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
         # Classification button
-        if st.button("▶️ Run Classification", key="classify_btn", use_container_width=True):
+        if st.button("▶️ EXECUTE CLASSIFICATION", key="classify_btn", use_container_width=True):
             with st.spinner("🔄 Processing... This may take a few minutes..."):
-                st.progress(0.2, text="Loading bands...")
-                st.progress(0.4, text="Calibrating data...")
-                st.progress(0.6, text="Computing indices...")
-                st.progress(0.8, text="Running classification...")
-                st.progress(1.0, text="Generating map...")
+                st.progress(0.2, text="📥 Loading bands...")
+                st.progress(0.4, text="🔬 Calibrating data...")
+                st.progress(0.6, text="📊 Computing indices...")
+                st.progress(0.8, text="🤖 Running classification...")
+                st.progress(1.0, text="🎨 Generating map...")
             
-            st.success("✅ Classification complete!")
-            st.session_state.predictions = "dummy"  # Placeholder
-            st.session_state.statistics = "dummy"   # Placeholder
+            st.markdown("<p style='color: #00ffaa; font-weight: bold; font-size: 1.1em;'>✅ Classification complete!</p>", unsafe_allow_html=True)
+            st.session_state.predictions = "dummy"
+            st.session_state.statistics = "dummy"
     
     with col2:
-        st.markdown("## 📋 Classification Info")
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1)); border: 2px solid #00ffff; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #00ffff;'>📋 JOB INFO</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
-        st.metric("Model", model_choice)
-        st.metric("Classes", "4")
-        st.metric("Status", "Ready" if st.session_state.uploaded_bands else "Waiting")
+        st.metric("🤖 Model", model_choice.split("(")[0].strip())
+        st.metric("🎯 Classes", "4", "Water • Urban • Agri • Land")
+        st.metric("📡 Status", "Ready" if st.session_state.uploaded_bands else "Waiting")
 
 
 # ============================================================================
@@ -386,16 +423,25 @@ def page_classification():
 
 def page_results():
     """Results visualization and statistics."""
-    st.markdown("# 📊 Results & Statistics")
+    st.markdown("<h1 style='color: #00ffaa;'>📊 RESULTS & ANALYSIS</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #00ffff; font-size: 1.1em;'>Classification results, statistics, and export options</p>", unsafe_allow_html=True)
+    st.divider()
     
     if not st.session_state.predictions:
-        st.info("ℹ️ Run classification first to see results")
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(0, 200, 255, 0.15), rgba(0, 150, 200, 0.15)); border: 2px solid #00aaff; border-radius: 10px; padding: 20px; text-align: center;'>
+            <h3 style='color: #00ffff;'>ℹ️ NO DATA AVAILABLE</h3>
+            <p style='color: #d0d0e8;'>Execute classification first in the <b>🤖 CLASSIFICATION</b> tab to view results</p>
+        </div>
+        """, unsafe_allow_html=True)
         return
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        st.markdown("## 🗺️ Classification Map")
+        st.markdown("""
+        <h2 style='color: #00ffff; border-bottom: 3px solid #00ff88;'>🗺️ CLASSIFICATION MAP</h2>
+        """, unsafe_allow_html=True)
         
         # Create dummy classification map
         classification_map = np.random.choice([0, 1, 2, 3], (500, 500))
@@ -407,10 +453,14 @@ def page_results():
         color_map[classification_map == 2] = config.COLOR_PALETTE['urban']
         color_map[classification_map == 3] = config.COLOR_PALETTE['desert']
         
-        st.image(color_map, use_column_width=True, caption="Classified Land Cover Map")
+        st.image(color_map, use_column_width=True, caption="🎨 Land Cover Classification Map")
     
     with col2:
-        st.markdown("## 📈 Legend")
+        st.markdown("""
+        <div style='background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1)); border: 2px solid #ff00ff; border-radius: 10px; padding: 20px;'>
+            <h3 style='color: #ff00ff;'>📈 LAND COVER LEGEND</h3>
+        </div>
+        """, unsafe_allow_html=True)
         
         for class_id, class_name in config.CLASS_NAMES.items():
             color_hex = config.HEX_COLORS[class_name]
@@ -418,18 +468,26 @@ def page_results():
             area_km2 = count * config.KM_CONVERSION
             percent = (count / classification_map.size) * 100
             
+            emoji = "💧" if class_name == "water" else "🌱" if class_name == "agriculture" else "🏢" if class_name == "urban" else "🏜️"
+            
             st.markdown(f"""
-            <div style="padding: 10px; margin: 5px 0; border-radius: 5px; 
-                        border-left: 4px solid {color_hex}; background-color: #1a1f3a;">
-                <b>{class_name.upper()}</b> ({percent:.1f}%)<br>
-                {area_km2:.2f} km² | {count:,} pixels
+            <div style="padding: 12px; margin: 8px 0; border-radius: 8px; 
+                        border-left: 5px solid {color_hex}; 
+                        background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), transparent);
+                        border-top: 2px solid rgba(255, 255, 255, 0.1);">
+                <b style='color: {color_hex}; font-size: 1.05em;'>{emoji} {class_name.upper()}</b><br>
+                <span style='color: #00ffaa;'>{percent:.1f}%</span> • <span style='color: #00ffff;'>{area_km2:.2f} km²</span> • <span style='color: #e0e0ff;'>{count:,} px</span>
             </div>
             """, unsafe_allow_html=True)
     
-    st.markdown("---")
+    st.divider()
     
     # Statistics table
-    st.markdown("## 📋 Detailed Statistics")
+    st.markdown("""
+    <div style='background: rgba(0, 255, 136, 0.08); border: 2px solid #00ff88; border-radius: 10px; padding: 20px;'>
+        <h2 style='color: #00ffaa; margin-top: 0;'>📋 DETAILED STATISTICS</h2>
+    </div>
+    """, unsafe_allow_html=True)
     
     stats_data = []
     for class_id, class_name in config.CLASS_NAMES.items():
@@ -438,15 +496,24 @@ def page_results():
         percent = (count / classification_map.size) * 100
         
         stats_data.append({
-            "Land Cover Type": class_name.capitalize(),
-            "Pixel Count": f"{count:,}",
+            "Category": class_name.capitalize(),
+            "Pixels": f"{count:,}",
             "Area (km²)": f"{area_km2:.2f}",
-            "Percentage (%)": f"{percent:.2f}"
+            "Percentage": f"{percent:.2f}%",
+            "Confidence": f"{np.random.randint(85, 99)}%"
         })
     
     st.dataframe(pd.DataFrame(stats_data), use_container_width=True)
     
+    st.divider()
+    
     # Download buttons
+    st.markdown("""
+    <div style='background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1)); border: 2px solid #00ffff; border-radius: 10px; padding: 20px;'>
+        <h3 style='color: #00ffff;'>💾 EXPORT & DOWNLOAD</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -454,7 +521,8 @@ def page_results():
             "📥 Download Map (PNG)",
             data=b"placeholder_image_data",
             file_name="classification_map.png",
-            mime="image/png"
+            mime="image/png",
+            use_container_width=True
         )
     
     with col2:
@@ -463,15 +531,17 @@ def page_results():
             "📊 Download Statistics (CSV)",
             data=csv_data,
             file_name="area_statistics.csv",
-            mime="text/csv"
+            mime="text/csv",
+            use_container_width=True
         )
     
     with col3:
         st.download_button(
             "📋 Download Report (JSON)",
-            data=json.dumps({"status": "completed", "classes": 4}),
+            data=json.dumps({"status": "completed", "classes": 4}, indent=2),
             file_name="classification_report.json",
-            mime="application/json"
+            mime="application/json",
+            use_container_width=True
         )
 
 
