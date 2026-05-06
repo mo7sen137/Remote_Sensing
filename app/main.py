@@ -78,13 +78,21 @@ def setup_page_config():
         }
         
         /* =========== ANIMATED BACKGROUND =========== */
-        html, body, [class*="css"] {
+        * {
+            background-color: transparent !important;
+        }
+        
+        html, body, [class*="css"], [class*="main"], [class*="block"], [data-testid*="stApp"] {
             background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
         }
         
-        .stApp {
-            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%);
+        .stApp, .stMainBlockContainer, [data-testid="stAppViewBlockContainer"] {
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
             color: #E8EAED;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0F172A 0%, #1A1F47 50%, #0F172A 100%) !important;
         }
         
         /* =========== TYPOGRAPHY =========== */
