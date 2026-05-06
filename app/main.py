@@ -38,38 +38,61 @@ def setup_page_config():
     )
     
     # =========================================================================
-    # PROFESSIONAL ENTERPRISE DESIGN SYSTEM v3.0
+    # PROFESSIONAL DARK THEME WITH ANIMATED GRADIENTS v4.0
     # =========================================================================
     st.markdown("""
         <style>
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
+        }
+        
         :root {
-            --primary: #1F2937;
-            --accent: #06B6D4;
+            --primary: #8B5CF6;
+            --accent: #A78BFA;
             --success: #10B981;
             --warning: #F59E0B;
             --error: #EF4444;
-            --bg-light: #FFFFFF;
-            --bg-secondary: #F9FAFB;
-            --border: #E5E7EB;
-            --text-primary: #111827;
-            --text-secondary: #6B7280;
+            --bg-dark: #0F0F1E;
+            --bg-darker: #0A0A14;
+            --bg-card: #1A1A2E;
+            --bg-card-light: #252541;
+            --border: #3F3F5F;
+            --text-primary: #E8E8F0;
+            --text-secondary: #B0B0C0;
         }
         
-        /* Main background */
+        /* Main animated background */
         .stApp {
-            background-color: #F9FAFB;
+            background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14, #250F3E, #0F0F1E);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
         }
         
         /* Sidebar */
         [data-testid="stSidebar"] {
-            background-color: #FFFFFF;
-            border-right: 1px solid var(--border);
+            background: linear-gradient(180deg, #1A1A2E 0%, #252541 100%);
+            border-right: 2px solid var(--primary);
+            box-shadow: inset -10px 0 30px rgba(139, 92, 246, 0.1);
         }
         
-        /* Main content */
+        /* Main content container */
         [data-testid="stMainBlockContainer"] {
-            background-color: #F9FAFB;
+            background: linear-gradient(135deg, rgba(15, 15, 30, 0.8), rgba(26, 10, 46, 0.8));
             color: var(--text-primary);
+            border-radius: 0;
+        }
+        
+        [data-testid="stAppViewBlockContainer"] {
+            background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14);
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
         }
         
         /* Headers - Clean Typography */
@@ -79,10 +102,11 @@ def setup_page_config():
             font-size: 32px !important;
             line-height: 1.2 !important;
             margin-bottom: 16px !important;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
         }
         
         h2 {
-            color: var(--primary) !important;
+            color: var(--accent) !important;
             font-weight: 600 !important;
             font-size: 24px !important;
             line-height: 1.3 !important;
@@ -90,7 +114,7 @@ def setup_page_config():
         }
         
         h3 {
-            color: var(--primary) !important;
+            color: var(--accent) !important;
             font-weight: 600 !important;
             font-size: 18px !important;
             line-height: 1.4 !important;
@@ -112,57 +136,106 @@ def setup_page_config():
         /* Divider */
         hr {
             border: 0;
-            border-top: 1px solid var(--border);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
             margin: 24px 0;
         }
         
         /* Buttons */
         .stButton>button {
-            background-color: var(--accent);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
-            border: none;
-            border-radius: 6px;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
             padding: 10px 16px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
         }
         
         .stButton>button:hover {
-            background-color: #0891B2;
-            box-shadow: 0 4px 6px rgba(6, 182, 212, 0.15);
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+            transform: translateY(-2px);
         }
         
         /* Cards */
         .card {
-            background: var(--bg-light);
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%);
+            border: 1px solid var(--primary);
+            border-radius: 12px;
             padding: 16px;
             margin: 16px 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
         .card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            background: linear-gradient(135deg, #252541 0%, #2F1F4E 100%);
+            box-shadow: 0 12px 48px rgba(139, 92, 246, 0.3);
+            border-color: var(--accent);
+            transform: translateY(-4px);
         }
         
         /* Accent Card */
         .card-accent {
-            border-left: 4px solid var(--accent);
+            border-left: 4px solid var(--primary);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%);
         }
         
         .card-success {
             border-left: 4px solid var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
         }
         
         /* Metrics */
         [data-testid="stMetric"] {
-            background: white;
+            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 16px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        [data-testid="stMetric"]:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.25);
+        }
+        
+        /* Text styling */
+        [data-testid="stMarkdownContainer"] {
+            color: var(--text-primary);
+        }
+        
+        /* Expander */
+        [data-testid="stExpander"] {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5), rgba(37, 37, 65, 0.5));
+        }
+        
+        /* File uploader */
+        [data-testid="stFileUploadDropzone"] {
+            border: 2px dashed var(--primary);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.02));
+        }
+        
+        /* Success message */
+        .stSuccess {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10B981;
+            border: 1px solid #10B981;
+            border-radius: 8px;
+        }
+        
+        /* Warning message */
+        .stWarning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #F59E0B;
+            border: 1px solid #F59E0B;
+            border-radius: 8px;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -175,7 +248,7 @@ def setup_page_config():
 def page_home():
     """Home page with project overview."""
     st.markdown("<h1 style='text-align: center; margin-bottom: 8px;'>Remote Sensing Classification</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #6B7280; font-size: 16px; margin-bottom: 24px;'>Advanced satellite imagery processing with machine learning</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: var(--text-secondary); font-size: 16px; margin-bottom: 24px;'>Advanced satellite imagery processing with machine learning</p>", unsafe_allow_html=True)
     st.divider()
     
     # Key Metrics
@@ -281,7 +354,7 @@ def page_home():
 def page_upload():
     """Data upload interface."""
     st.markdown("<h1>Upload Satellite Data</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #6B7280; font-size: 16px;'>Import Landsat 8 bands and metadata files for processing</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Import Landsat 8 bands and metadata files for processing</p>", unsafe_allow_html=True)
     st.divider()
     
     col1, col2 = st.columns([1, 1], gap="large")
@@ -432,7 +505,7 @@ def page_preview():
 def page_classification():
     """Classification and prediction."""
     st.markdown("<h1>Land Cover Classification</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #6B7280; font-size: 16px;'>Select model and run classification on uploaded satellite data</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Select model and run classification on uploaded satellite data</p>", unsafe_allow_html=True)
     st.divider()
     
     if not st.session_state.uploaded_bands:
@@ -505,7 +578,7 @@ def page_classification():
 def page_results():
     """Results visualization and statistics."""
     st.markdown("<h1>Results & Analysis</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #6B7280; font-size: 16px;'>Classification results, statistics, and export options</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Classification results, statistics, and export options</p>", unsafe_allow_html=True)
     st.divider()
     
     if not st.session_state.predictions:
