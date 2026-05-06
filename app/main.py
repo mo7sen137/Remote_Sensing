@@ -38,7 +38,7 @@ def setup_page_config():
     )
     
     # =========================================================================
-    # PROFESSIONAL DARK THEME WITH ANIMATED GRADIENTS v4.0
+    # PROFESSIONAL DARK THEME - CLEAN & WORKING v5.0
     # =========================================================================
     st.markdown("""
         <style>
@@ -48,24 +48,9 @@ def setup_page_config():
             100% { background-position: 0% 50%; }
         }
         
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
-        }
-        
-        @keyframes floatSatellite {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
-            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.25; }
-        }
-        
-        @keyframes floatRadar {
-            0%, 100% { transform: translateX(0px) rotate(0deg); opacity: 0.1; }
-            50% { transform: translateX(30px) rotate(180deg); opacity: 0.2; }
-        }
-        
-        @keyframes rotateAntenna {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
         
         :root {
@@ -75,7 +60,6 @@ def setup_page_config():
             --warning: #F59E0B;
             --error: #EF4444;
             --bg-dark: #0F0F1E;
-            --bg-darker: #0A0A14;
             --bg-card: #1A1A2E;
             --bg-card-light: #252541;
             --border: #3F3F5F;
@@ -83,292 +67,224 @@ def setup_page_config():
             --text-secondary: #B0B0C0;
         }
         
-        /* Background icons container */
-        .stApp::before,
-        .stApp::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        /* Main animated background */
+        /* Root app background */
         .stApp {
-            background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14, #250F3E, #0F0F1E);
+            background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14, #250F3E);
             background-size: 400% 400%;
-            animation: gradientFlow 15s ease infinite;
-            overflow: hidden;
+            animation: gradientFlow 15s ease infinite !important;
         }
         
-        /* Background SVG icons */
-        [data-testid="stAppViewBlockContainer"]::before {
-            content: '';
-            position: fixed;
-            top: -20%;
-            right: -10%;
-            width: 400px;
-            height: 400px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><g opacity="0.15"><circle cx="200" cy="200" r="150" fill="none" stroke="%238B5CF6" stroke-width="2"/><circle cx="200" cy="200" r="100" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="200" cy="200" r="50" fill="none" stroke="%238B5CF6" stroke-width="1"/><path d="M 200 50 L 200 150 M 350 200 L 250 200 M 200 350 L 200 250 M 50 200 L 150 200" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="200" cy="200" r="8" fill="%238B5CF6"/></g></svg>') no-repeat center;
-            animation: rotateAntenna 30s linear infinite;
-            z-index: 0;
-        }
-        
-        [data-testid="stAppViewBlockContainer"]::after {
-            content: '';
-            position: fixed;
-            bottom: -15%;
-            left: -5%;
-            width: 350px;
-            height: 350px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g opacity="0.12"><rect x="50" y="30" width="100" height="120" fill="none" stroke="%238B5CF6" stroke-width="2"/><rect x="55" y="35" width="90" height="30" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><path d="M 80 65 L 80 140 M 120 65 L 120 140" stroke="%238B5CF6" stroke-width="1"/><circle cx="70" cy="25" r="4" fill="%238B5CF6"/><circle cx="130" cy="25" r="4" fill="%238B5CF6"/><path d="M 85 145 Q 100 160 115 145" stroke="%238B5CF6" stroke-width="1.5" fill="none"/></g></svg>') no-repeat center;
-            animation: rotateAntenna 40s linear infinite reverse;
-            z-index: 0;
-        }
-        
-        /* Satellite icon - top left */
-        [data-testid="stMainBlockContainer"]::before {
-            content: '';
-            position: fixed;
-            top: 10%;
-            left: 5%;
-            width: 300px;
-            height: 300px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300"><g opacity="0.13"><rect x="100" y="80" width="100" height="100" rx="10" fill="none" stroke="%238B5CF6" stroke-width="2"/><path d="M 80 130 L 220 130 M 130 60 L 130 200 M 80 170 L 220 170" stroke="%238B5CF6" stroke-width="1.5"/><circle cx="150" cy="130" r="15" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="70" y="120" width="20" height="20" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="210" y="120" width="20" height="20" fill="none" stroke="%238B5CF6" stroke-width="1"/><rect x="135" y="40" width="30" height="15" fill="none" stroke="%238B5CF6" stroke-width="1.5"/></g></svg>') no-repeat center;
-            animation: floatSatellite 8s ease-in-out infinite;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        /* Radar icon - bottom right */
-        [data-testid="stMainBlockContainer"]::after {
-            content: '';
-            position: fixed;
-            bottom: 8%;
-            right: 3%;
-            width: 280px;
-            height: 280px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g opacity="0.12"><path d="M 100 100 m -80 0 a 80 80 0 1 0 160 0 a 80 80 0 1 0 -160 0" fill="none" stroke="%238B5CF6" stroke-width="1" opacity="0.5"/><path d="M 100 100 m -50 0 a 50 50 0 1 0 100 0 a 50 50 0 1 0 -100 0" fill="none" stroke="%238B5CF6" stroke-width="1" opacity="0.6"/><path d="M 100 100 m -25 0 a 25 25 0 1 0 50 0 a 25 25 0 1 0 -50 0" fill="none" stroke="%238B5CF6" stroke-width="1.5"/><line x1="100" y1="100" x2="100" y2="20" stroke="%238B5CF6" stroke-width="1.5" opacity="0.8"/><path d="M 100 100 L 160 40 L 140 60 Z" fill="%238B5CF6" opacity="0.4"/></g></svg>') no-repeat center;
-            animation: floatRadar 10s ease-in-out infinite;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        /* Sidebar */
+        /* Sidebar styling */
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #1A1A2E 0%, #252541 100%);
-            border-right: 2px solid var(--primary);
-            box-shadow: inset -10px 0 30px rgba(139, 92, 246, 0.1);
-            z-index: 10;
+            background: linear-gradient(180deg, #1A1A2E 0%, #252541 100%) !important;
+            border-right: 2px solid var(--primary) !important;
         }
         
-        /* Main content container */
+        /* Main content area */
         [data-testid="stMainBlockContainer"] {
-            background: linear-gradient(135deg, rgba(15, 15, 30, 0.8), rgba(26, 10, 46, 0.8));
-            color: var(--text-primary);
-            border-radius: 0;
-            z-index: 1;
-            position: relative;
+            background-color: transparent !important;
+            color: var(--text-primary) !important;
         }
         
         [data-testid="stAppViewBlockContainer"] {
-            background: linear-gradient(-45deg, #0F0F1E, #1A0F2E, #0A0A14);
-            background-size: 400% 400%;
-            animation: gradientFlow 15s ease infinite;
-            z-index: 0;
+            background-color: transparent !important;
         }
         
-        /* Headers - Clean Typography */
+        /* Headers */
         h1 {
             color: var(--primary) !important;
             font-weight: 700 !important;
-            font-size: 32px !important;
-            line-height: 1.2 !important;
-            margin-bottom: 16px !important;
+            font-size: 56px !important;
+            line-height: 1.1 !important;
+            margin: 24px 0 16px 0 !important;
             text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-            position: relative;
-            z-index: 2;
+            letter-spacing: -0.5px !important;
         }
         
         h2 {
             color: var(--accent) !important;
-            font-weight: 600 !important;
-            font-size: 24px !important;
-            line-height: 1.3 !important;
-            margin-bottom: 12px !important;
-            position: relative;
-            z-index: 2;
+            font-weight: 700 !important;
+            font-size: 44px !important;
+            line-height: 1.2 !important;
+            margin: 20px 0 16px 0 !important;
+            letter-spacing: -0.3px !important;
         }
         
         h3 {
             color: var(--accent) !important;
-            font-weight: 600 !important;
-            font-size: 18px !important;
-            line-height: 1.4 !important;
-            margin-bottom: 8px !important;
-            position: relative;
-            z-index: 2;
+            font-weight: 700 !important;
+            font-size: 28px !important;
+            line-height: 1.3 !important;
+            margin: 16px 0 12px 0 !important;
+            letter-spacing: -0.2px !important;
         }
         
         /* Body text */
-        p, body {
+        p, body, span {
             color: var(--text-primary) !important;
             font-size: 14px !important;
             line-height: 1.6 !important;
-            position: relative;
-            z-index: 2;
         }
         
-        /* Basic styles */
+        /* Font family */
         * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
         }
         
         /* Divider */
         hr {
-            border: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin: 24px 0;
-            position: relative;
-            z-index: 2;
+            border: 0 !important;
+            height: 1px !important;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent) !important;
+            margin: 24px 0 !important;
         }
         
         /* Buttons */
-        .stButton>button {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
-            position: relative;
-            z-index: 2;
+        .stButton > button {
+            background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+            color: white !important;
+            border: 1px solid var(--primary) !important;
+            border-radius: 8px !important;
+            padding: 10px 16px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3) !important;
         }
         
-        .stButton>button:hover {
-            background: linear-gradient(135deg, var(--accent), var(--primary));
-            box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
-            transform: translateY(-2px);
+        .stButton > button:hover {
+            background: linear-gradient(135deg, var(--accent), var(--primary)) !important;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.6) !important;
+            transform: translateY(-2px) !important;
         }
         
         /* Cards */
         .card {
-            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%);
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 16px 0;
-            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%) !important;
+            border: 1px solid var(--primary) !important;
+            border-radius: 12px !important;
+            padding: 16px !important;
+            margin: 16px 0 !important;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15) !important;
+            transition: all 0.3s ease !important;
         }
         
         .card:hover {
-            background: linear-gradient(135deg, #252541 0%, #2F1F4E 100%);
-            box-shadow: 0 12px 48px rgba(139, 92, 246, 0.3);
-            border-color: var(--accent);
-            transform: translateY(-4px);
+            background: linear-gradient(135deg, #252541 0%, #2F1F4E 100%) !important;
+            box-shadow: 0 12px 48px rgba(139, 92, 246, 0.3) !important;
+            border-color: var(--accent) !important;
+            transform: translateY(-4px) !important;
         }
         
-        /* Accent Card */
+        /* Card variants */
         .card-accent {
-            border-left: 4px solid var(--primary);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%);
+            border-left: 4px solid var(--primary) !important;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%) !important;
         }
         
         .card-success {
-            border-left: 4px solid var(--success);
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-left: 4px solid var(--success) !important;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
         }
         
         /* Metrics */
         [data-testid="stMetric"] {
-            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            padding: 16px !important;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15) !important;
+            transition: all 0.3s ease !important;
         }
         
         [data-testid="stMetric"]:hover {
-            border-color: var(--primary);
-            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.25);
+            border-color: var(--primary) !important;
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.25) !important;
         }
         
-        /* Text styling */
+        /* Markdown container */
         [data-testid="stMarkdownContainer"] {
-            color: var(--text-primary);
-            position: relative;
-            z-index: 2;
+            color: var(--text-primary) !important;
         }
         
         /* Expander */
         [data-testid="stExpander"] {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5), rgba(37, 37, 65, 0.5));
-            position: relative;
-            z-index: 2;
+            border: 1px solid var(--border) !important;
+            border-radius: 8px !important;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5), rgba(37, 37, 65, 0.5)) !important;
         }
         
         /* File uploader */
         [data-testid="stFileUploadDropzone"] {
-            border: 2px dashed var(--primary);
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.02));
-            position: relative;
-            z-index: 2;
+            border: 2px dashed var(--primary) !important;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(167, 139, 250, 0.02)) !important;
         }
         
         /* Success message */
         .stSuccess {
-            background-color: rgba(16, 185, 129, 0.15);
-            color: #10B981;
-            border: 1px solid #10B981;
-            border-radius: 8px;
-            position: relative;
-            z-index: 2;
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            color: #10B981 !important;
+            border: 1px solid #10B981 !important;
+            border-radius: 8px !important;
         }
         
         /* Warning message */
         .stWarning {
-            background-color: rgba(245, 158, 11, 0.15);
-            color: #F59E0B;
-            border: 1px solid #F59E0B;
-            border-radius: 8px;
-            position: relative;
-            z-index: 2;
+            background-color: rgba(245, 158, 11, 0.15) !important;
+            color: #F59E0B !important;
+            border: 1px solid #F59E0B !important;
+            border-radius: 8px !important;
         }
         
         /* Team member card */
         .team-member {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05));
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 8px;
-            padding: 12px;
-            margin: 8px 0;
-            font-size: 13px;
-            line-height: 1.5;
-            color: var(--text-secondary);
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.08)) !important;
+            border: 1px solid rgba(139, 92, 246, 0.5) !important;
+            border-radius: 8px !important;
+            padding: 12px !important;
+            margin: 8px 0 !important;
+            font-size: 13px !important;
+            line-height: 1.6 !important;
+            color: #E8E8F0 !important;
+            transition: all 0.3s ease !important;
+            animation: floatAnim 3s ease-in-out infinite;
         }
         
         .team-member:hover {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1));
-            border-color: rgba(139, 92, 246, 0.6);
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(167, 139, 250, 0.15)) !important;
+            border-color: rgba(139, 92, 246, 0.8) !important;
             transform: translateX(4px);
+            color: #F3F4F6 !important;
+        }
+        
+        /* Column */
+        [data-testid="column"] {
+            background-color: transparent !important;
+        }
+        
+        /* Divider color */
+        .stDivider {
+            background: linear-gradient(90deg, transparent, var(--primary), transparent) !important;
+        }
+        
+        /* Input fields */
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            background: linear-gradient(135deg, #1A1A2E 0%, #252541 100%) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 6px !important;
+        }
+        
+        /* Radio button */
+        [role="radio"] {
+            color: var(--primary) !important;
+        }
+        
+        /* Checkbox */
+        [role="checkbox"] {
+            color: var(--primary) !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -438,7 +354,7 @@ def page_home():
     col1, col2, col3 = st.columns(3, gap="medium")
     
     with col1:
-        with st.expander("Preprocessing & Calibration", expanded=False):
+        with st.expander("Preprocessing & Calibration"):
             st.markdown("""
             • Radiometric calibration
             • Band normalization
@@ -447,27 +363,26 @@ def page_home():
             """)
     
     with col2:
-        with st.expander("Feature Extraction", expanded=False):
+        with st.expander("Feature Extraction"):
             st.markdown("""
             **Input Bands:**
-            B2 through B7 (6 bands)
+            - B2 through B7 (6 bands)
             
             **Computed Indices:**
-            • NDVI (vegetation)
-            • NDWI (water)
-            • NDBI (urban)
+            - NDVI (vegetation)
+            - NDWI (water)
+            - NDBI (urban)
             """)
     
     with col3:
-        with st.expander("ML Classification", expanded=False):
+        with st.expander("ML Classification"):
             st.markdown("""
-            **Ensemble Approach:**
-            • Random Forest
-            • Support Vector Machine
-            • K-Nearest Neighbors
+            **Ensemble Models:**
+            - Random Forest
+            - Support Vector Machine
+            - K-Nearest Neighbors
             
-            **Aggregation:**
-            Majority voting
+            **Aggregation:** Majority voting
             """)
     
     st.divider()
