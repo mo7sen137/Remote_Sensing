@@ -6,8 +6,7 @@ Helper functions for data loading, validation, and processing
 import os
 import numpy as np
 from typing import Dict, Tuple, List
-import rasterio
-from rasterio.io import MemoryFile
+import tifffile
 
 
 class LandsatFileHandler:
@@ -27,8 +26,7 @@ class LandsatFileHandler:
             2D numpy array of band data
         """
         try:
-            with rasterio.open(filepath) as src:
-                band_data = src.read(1)
+            band_data = tifffile.imread(filepath)
             return band_data
         except Exception as e:
             raise IOError(f"Error reading band file {filepath}: {str(e)}")

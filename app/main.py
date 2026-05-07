@@ -94,7 +94,7 @@ def setup_page_config():
         h1 {
             color: var(--primary) !important;
             font-weight: 700 !important;
-            font-size: 38px !important;
+            font-size: 42px !important;
             line-height: 1.2 !important;
             margin-bottom: 16px !important;
             text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
@@ -103,7 +103,7 @@ def setup_page_config():
         h2 {
             color: var(--accent) !important;
             font-weight: 600 !important;
-            font-size: 28px !important;
+            font-size: 32px !important;
             line-height: 1.3 !important;
             margin-bottom: 16px !important;
         }
@@ -111,7 +111,7 @@ def setup_page_config():
         h3 {
             color: var(--accent) !important;
             font-weight: 600 !important;
-            font-size: 20px !important;
+            font-size: 24px !important;
             line-height: 1.4 !important;
             margin-bottom: 8px !important;
         }
