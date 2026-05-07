@@ -42,6 +42,8 @@ def setup_page_config():
     # =========================================================================
     st.markdown("""
         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Material+Icons');
+        
         @keyframes gradientFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -94,29 +96,26 @@ def setup_page_config():
         h1 {
             color: var(--primary) !important;
             font-weight: 700 !important;
-            font-size: 56px !important;
-            line-height: 1.1 !important;
-            margin: 24px 0 16px 0 !important;
+            font-size: 38px !important;
+            line-height: 1.2 !important;
+            margin-bottom: 16px !important;
             text-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-            letter-spacing: -0.5px !important;
         }
         
         h2 {
             color: var(--accent) !important;
-            font-weight: 700 !important;
-            font-size: 44px !important;
-            line-height: 1.2 !important;
-            margin: 20px 0 16px 0 !important;
-            letter-spacing: -0.3px !important;
+            font-weight: 600 !important;
+            font-size: 28px !important;
+            line-height: 1.3 !important;
+            margin-bottom: 16px !important;
         }
         
         h3 {
             color: var(--accent) !important;
-            font-weight: 700 !important;
-            font-size: 28px !important;
-            line-height: 1.3 !important;
-            margin: 16px 0 12px 0 !important;
-            letter-spacing: -0.2px !important;
+            font-weight: 600 !important;
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+            margin-bottom: 8px !important;
         }
         
         /* Body text */
@@ -126,9 +125,18 @@ def setup_page_config():
             line-height: 1.6 !important;
         }
         
-        /* Font family */
+        /* Font family - exclude icons */
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+        }
+        
+        /* Material Icons specific */
+        .material-icons,
+        [role="img"],
+        button [role="img"],
+        [data-testid="collapsedControl"] *,
+        [data-testid="collapsedControl"] button * {
+            font-family: 'Material Icons' !important;
         }
         
         /* Divider */
@@ -237,23 +245,18 @@ def setup_page_config():
         
         /* Team member card */
         .team-member {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(167, 139, 250, 0.08)) !important;
-            border: 1px solid rgba(139, 92, 246, 0.5) !important;
-            border-radius: 8px !important;
-            padding: 12px !important;
-            margin: 8px 0 !important;
+            background: rgba(139, 92, 246, 0.1) !important;
+            border: 1px solid rgba(139, 92, 246, 0.3) !important;
+            border-radius: 6px !important;
+            padding: 10px !important;
+            margin: 6px 0 !important;
             font-size: 13px !important;
-            line-height: 1.6 !important;
-            color: #E8E8F0 !important;
-            transition: all 0.3s ease !important;
-            animation: floatAnim 3s ease-in-out infinite;
+            color: #B0B0C0 !important;
         }
         
         .team-member:hover {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(167, 139, 250, 0.15)) !important;
-            border-color: rgba(139, 92, 246, 0.8) !important;
-            transform: translateX(4px);
-            color: #F3F4F6 !important;
+            background: rgba(139, 92, 246, 0.15) !important;
+            color: #C0C0D0 !important;
         }
         
         /* Column */
@@ -285,6 +288,11 @@ def setup_page_config():
         /* Checkbox */
         [role="checkbox"] {
             color: var(--primary) !important;
+        }
+        
+        /* Sidebar toggle button - don't interfere */
+        [data-testid="collapsedControl"] {
+            /* Keep default styling */
         }
         </style>
     """, unsafe_allow_html=True)
@@ -354,7 +362,7 @@ def page_home():
     col1, col2, col3 = st.columns(3, gap="medium")
     
     with col1:
-        with st.expander("Preprocessing & Calibration"):
+        with st.expander("Preprocessing & Calibration", expanded=False):
             st.markdown("""
             • Radiometric calibration
             • Band normalization
@@ -363,26 +371,26 @@ def page_home():
             """)
     
     with col2:
-        with st.expander("Feature Extraction"):
+        with st.expander("Feature Extraction", expanded=False):
             st.markdown("""
             **Input Bands:**
-            - B2 through B7 (6 bands)
+            B2 through B7 (6 bands)
             
             **Computed Indices:**
-            - NDVI (vegetation)
-            - NDWI (water)
-            - NDBI (urban)
+            • NDVI (vegetation)
+            • NDWI (water)
+            • NDBI (urban)
             """)
     
     with col3:
-        with st.expander("ML Classification"):
+        with st.expander("ML Classification", expanded=False):
             st.markdown("""
             **Ensemble Models:**
-            - Random Forest
-            - Support Vector Machine
-            - K-Nearest Neighbors
+            • Random Forest
+            • Support Vector Machine
+            • K-Nearest Neighbors
             
-            **Aggregation:** Majority voting
+            **Voting:** Majority voting
             """)
     
     st.divider()
@@ -402,64 +410,39 @@ def page_home():
 def page_upload():
     """Data upload interface."""
     st.markdown("<h1>Upload Satellite Data</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Import Landsat 8 bands and metadata files for processing</p>", unsafe_allow_html=True)
+    st.markdown("<p>Import Landsat 8 bands and MTL metadata</p>", unsafe_allow_html=True)
     st.divider()
     
-    col1, col2 = st.columns([1, 1], gap="large")
+    st.markdown("<h3>Spectral Bands (B2-B7)</h3>", unsafe_allow_html=True)
     
-    with col1:
-        st.markdown("""
-        <div class='card card-accent'>
-            <h3 style='margin-top: 0;'>Spectral Bands (B2-B7)</h3>
-            <p style='font-size: 14px;'>Upload all 6 bands as GeoTIFF files:</p>
-            <ul style='font-size: 13px; margin: 0; padding-left: 20px;'>
-            <li><b>B2:</b> Coastal/Aerosol (0.43-0.45 μm)</li>
-            <li><b>B3:</b> Blue (0.45-0.51 μm)</li>
-            <li><b>B4:</b> Red (0.64-0.67 μm)</li>
-            <li><b>B5:</b> NIR (0.85-0.88 μm)</li>
-            <li><b>B6:</b> SWIR1 (1.57-1.65 μm)</li>
-            <li><b>B7:</b> SWIR2 (2.11-2.29 μm)</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        uploaded_bands = {}
-        for band_num in range(2, 8):
+    uploaded_bands = {}
+    col1, col2, col3 = st.columns(3)
+    
+    for band_num in range(2, 8):
+        col = col1 if band_num < 5 else (col2 if band_num < 6 else col3)
+        with col:
             uploaded_file = st.file_uploader(
-                f"Band {band_num} (*.tif)",
+                f"Band {band_num}",
                 type=['tif', 'tiff'],
                 key=f"band_{band_num}"
             )
             if uploaded_file:
                 uploaded_bands[band_num] = uploaded_file
-        
-        if uploaded_bands:
-            st.session_state.uploaded_bands = uploaded_bands
-            st.success(f"✓ {len(uploaded_bands)}/6 bands loaded")
     
-    with col2:
-        st.markdown("""
-        <div class='card card-success'>
-            <h3 style='margin-top: 0;'>Metadata File</h3>
-            <p style='font-size: 14px;'>Upload MTL metadata file for calibration:</p>
-            <ul style='font-size: 13px; margin: 0; padding-left: 20px;'>
-            <li>Format: <b>.txt</b> file</li>
-            <li>Contains calibration coefficients</li>
-            <li>Filename: <b>*_MTL.txt</b></li>
-            <li>Required for calibration</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        mtl_file = st.file_uploader(
-            "MTL File (*.txt)",
-            type=['txt'],
-            key="mtl_file"
-        )
-        
-        if mtl_file:
-            st.session_state.mtl_data = mtl_file
-            st.success("✓ MTL file loaded")
+    if uploaded_bands:
+        st.session_state.uploaded_bands = uploaded_bands
+    
+    st.markdown("<h3>Metadata File</h3>", unsafe_allow_html=True)
+    
+    mtl_file = st.file_uploader(
+        "MTL File",
+        type=['txt'],
+        key="mtl_file"
+    )
+    
+    if mtl_file:
+        st.session_state.mtl_data = mtl_file
+        st.success("✅ Metadata file loaded")
     
     st.divider()
     
