@@ -42,8 +42,6 @@ def setup_page_config():
     # =========================================================================
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Material+Icons');
-        
         @keyframes gradientFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -125,19 +123,8 @@ def setup_page_config():
             line-height: 1.6 !important;
         }
         
-        /* Font family - exclude icons */
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
-        }
-        
-        /* Material Icons specific */
-        .material-icons,
-        [role="img"],
-        button [role="img"],
-        [data-testid="collapsedControl"] *,
-        [data-testid="collapsedControl"] button * {
-            font-family: 'Material Icons' !important;
-        }
+        /* Remove all font overrides - let Streamlit handle its UI fonts */
+        /* This fixes icon rendering issues */
         
         /* Divider */
         hr {
@@ -285,16 +272,105 @@ def setup_page_config():
             color: var(--primary) !important;
         }
         
+        /* Hide unwanted icons - SVG in buttons/dropdowns */
+        [role="button"] svg,
+        [role="option"] svg,
+        [role="radio"] svg {
+            display: none !important;
+        }
+        
+        /* Hide keyboard icons in selects/dropdowns */
+        svg[aria-label*="keyboard"],
+        svg[data-testid*="keyboard"] {
+            display: none !important;
+        }
+        
+        /* Streamlit Select/Radio icon fixes */
+        [data-baseweb="select"] svg,
+        [data-baseweb="radio"] svg {
+            display: none !important;
+        }
+        
+        /* Selectbox button styling */
+        [data-baseweb="select"] button {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.1)) !important;
+            border: 1px solid var(--primary) !important;
+            border-radius: 6px !important;
+            color: var(--text-primary) !important;
+        }
+        
+        [data-baseweb="select"] button:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(167, 139, 250, 0.2)) !important;
+            border-color: var(--accent) !important;
+        }
+        
+        /* Hide Material Icon names */
+        .material-icons,
+        [class*="icon"]:not([class*="stIcon"]) {
+            font-size: 0 !important;
+        }
+        
+        /* AGGRESSIVE: Hide any icon-like text appearing */
+        button span,
+        button div,
+        [data-testid] span {
+            line-height: 1.5 !important;
+        }
+        
+        /* Hide icon text nodes */
+        button, [role="button"], [role="option"], [role="listbox"] {
+            font-variant-numeric: normal !important;
+        }
+        
+        /* Override any div/span that has icon-like content */
+        div:has(> span[class*="Material"]),
+        span[class*="Material"] {
+            display: none !important;
+        }
+        
         /* Checkbox */
         [role="checkbox"] {
             color: var(--primary) !important;
         }
         
-        /* Sidebar toggle button - don't interfere */
-        [data-testid="collapsedControl"] {
-            /* Keep default styling */
+        /* Sidebar toggle button fix */
+        [data-testid="collapsedControl"] button {
+            font-size: 0 !important;
+            color: var(--primary) !important;
+        }
+        
+        /* Replace text with symbol */
+        [data-testid="collapsedControl"] button::before {
+            content: "☰" !important;
+            font-size: 20px !important;
+            display: inline-block !important;
+        }
+        
+        [data-testid="collapsedControl"] button:hover {
+            color: var(--accent) !important;
         }
         </style>
+        
+        <script>
+        // Remove unwanted icon text that appears
+        function cleanupIconText() {
+            document.querySelectorAll('button, [role="button"], [role="option"], div').forEach(el => {
+                if (el.textContent && el.textContent.includes('keyboard_double_arrow_right')) {
+                    el.textContent = el.textContent.replace(/keyboard_double_arrow_right/g, '');
+                }
+                if (el.textContent && el.textContent.includes('keyboard')) {
+                    el.textContent = el.textContent.replace(/keyboard[a-z_]*/g, '');
+                }
+            });
+        }
+        
+        // Run cleanup on page load
+        setTimeout(cleanupIconText, 500);
+        
+        // Watch for dynamic changes and cleanup
+        const observer = new MutationObserver(cleanupIconText);
+        observer.observe(document.body, { childList: true, subtree: true });
+        </script>
     """, unsafe_allow_html=True)
 
 
@@ -410,58 +486,134 @@ def page_home():
 def page_upload():
     """Data upload interface."""
     st.markdown("<h1>Upload Satellite Data</h1>", unsafe_allow_html=True)
-    st.markdown("<p>Import Landsat 8 bands and MTL metadata</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Import Landsat 8 bands and MTL metadata</p>", unsafe_allow_html=True)
     st.divider()
     
-    st.markdown("<h3>Spectral Bands (B2-B7)</h3>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2, gap="large")
     
-    uploaded_bands = {}
-    col1, col2, col3 = st.columns(3)
-    
-    for band_num in range(2, 8):
-        col = col1 if band_num < 5 else (col2 if band_num < 6 else col3)
-        with col:
+    with col1:
+        st.markdown("""
+        <div class='card card-accent'>
+            <h3 style='margin-top: 0;'>📤 Spectral Bands (B1-B7)</h3>
+            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload all 7 bands as GeoTIFF files</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        uploaded_bands = {}
+        
+        # Band information - ALL 7 BANDS (B1 to B7)
+        band_info = {
+            1: {"name": "Coastal/Aerosol", "wavelength": "0.43 - 0.45 μm", "use": "Coastal and aerosol detection", "icon": "🌍"},
+            2: {"name": "Blue", "wavelength": "0.45 - 0.51 μm", "use": "Water bodies, coastal areas", "icon": "🔵"},
+            3: {"name": "Green", "wavelength": "0.53 - 0.59 μm", "use": "Vegetation analysis", "icon": "🟢"},
+            4: {"name": "Red", "wavelength": "0.64 - 0.67 μm", "use": "Vegetation, urban areas", "icon": "🔴"},
+            5: {"name": "NIR", "wavelength": "0.85 - 0.88 μm", "use": "Vegetation (NDVI)", "icon": "🟣"},
+            6: {"name": "SWIR1", "wavelength": "1.57 - 1.65 μm", "use": "Water/vegetation separation", "icon": "🟡"},
+            7: {"name": "SWIR2", "wavelength": "2.11 - 2.29 μm", "use": "Urban/rock mapping", "icon": "🟠"},
+        }
+        
+        # Display each band in a unified card with info and uploader
+        for band_num in range(1, 8):
+            info = band_info[band_num]
+            
+            # Create unified band card
+            st.markdown(f"""
+            <div style='background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05)); 
+                        padding: 14px; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.3);
+                        margin-bottom: 12px;'>
+                <div style='display: flex; align-items: start; justify-content: space-between; gap: 12px;'>
+                    <div style='flex: 1;'>
+                        <div style='display: flex; align-items: center; gap: 8px; margin-bottom: 6px;'>
+                            <span style='font-size: 18px;'>{info['icon']}</span>
+                            <div>
+                                <p style='margin: 0; font-weight: 600; color: var(--text-primary); font-size: 13px;'>Band {band_num} - {info['name']}</p>
+                                <p style='margin: 2px 0 0 0; font-size: 10px; color: #8B5CF6;'>λ: {info['wavelength']}</p>
+                            </div>
+                        </div>
+                        <p style='margin: 6px 0 0 0; font-size: 11px; color: var(--text-secondary);'>
+                            📍 {info['use']}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
             uploaded_file = st.file_uploader(
-                f"Band {band_num}",
+                f"Upload Band {band_num} ({info['name']})",
                 type=['tif', 'tiff'],
-                key=f"band_{band_num}"
+                key=f"band_{band_num}",
+                label_visibility="visible",
+                help=f"Band {band_num} - {info['name']}: {info['use']}"
             )
             if uploaded_file:
                 uploaded_bands[band_num] = uploaded_file
+                st.markdown(f"""
+                <div style='background: rgba(16, 185, 129, 0.15); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(16, 185, 129, 0.3);'>
+                    <p style='margin: 0; font-size: 12px; color: #10B981; font-weight: 600;'>✓ Band {band_num} ({info['name']}) successfully loaded</p>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
+        
+        if uploaded_bands:
+            st.session_state.uploaded_bands = uploaded_bands
     
-    if uploaded_bands:
-        st.session_state.uploaded_bands = uploaded_bands
-    
-    st.markdown("<h3>Metadata File</h3>", unsafe_allow_html=True)
-    
-    mtl_file = st.file_uploader(
-        "MTL File",
-        type=['txt'],
-        key="mtl_file"
-    )
-    
-    if mtl_file:
-        st.session_state.mtl_data = mtl_file
-        st.success("✅ Metadata file loaded")
+    with col2:
+        st.markdown("""
+        <div class='card card-accent'>
+            <h3 style='margin-top: 0;'>📋 Metadata File</h3>
+            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload MTL file for calibration</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        mtl_file = st.file_uploader(
+            "MTL File",
+            type=['txt'],
+            key="mtl_file",
+            label_visibility="collapsed"
+        )
+        
+        if mtl_file:
+            st.session_state.mtl_data = mtl_file
+            st.success("✅ Metadata file loaded")
+        
+        st.markdown("---")
+        st.markdown("""
+        <div style='background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #8B5CF6;'>
+            <p style='margin: 0; font-size: 13px; color: var(--text-secondary);'>
+                <b>ℹ️ Total Required:</b><br>
+                • 7 bands (B1-B7)<br>
+                • 1 MTL metadata file
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.divider()
     
-    # Show file sizes
+    # Show file sizes and status
     if uploaded_bands or mtl_file:
-        st.markdown("<h2>Upload Summary</h2>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3, gap="medium")
+        st.markdown("<h2>Upload Status</h2>", unsafe_allow_html=True)
+        
+        col1, col2, col3, col4 = st.columns(4, gap="medium")
         
         with col1:
-            status = "Complete" if len(uploaded_bands) == 6 else "Incomplete"
-            st.metric("Bands Loaded", f"{len(uploaded_bands)}/6", delta=status)
+            status_color = "#10B981" if len(uploaded_bands) == 7 else "#F59E0B"
+            st.metric("Bands Loaded", f"{len(uploaded_bands)}/7")
         
         with col2:
-            mtl_status = "Ready" if mtl_file else "Missing"
-            st.metric("MTL File", "Loaded" if mtl_file else "Not Loaded", delta=mtl_status)
+            st.metric("MTL File", "✓ Loaded" if mtl_file else "✗ Missing")
         
         with col3:
-            ready = "Ready" if len(uploaded_bands) == 6 and mtl_file else "Waiting"
-            st.metric("Processing", "Can Start" if len(uploaded_bands) == 6 and mtl_file else "Incomplete", delta=ready)
+            total_ready = len(uploaded_bands) == 7 and mtl_file
+            st.metric("Status", "Ready ✓" if total_ready else "Incomplete ⏳")
+        
+        with col4:
+            if total_ready:
+                st.success("All data ready for processing!")
+            else:
+                st.warning(f"Need {7 - len(uploaded_bands)} more bands" if len(uploaded_bands) < 7 else "Need MTL file")
+    else:
+        st.info("👆 Upload data to get started")
 
 
 # ============================================================================
@@ -653,10 +805,15 @@ def page_results():
             
             st.markdown(f"""
             <div style="padding: 10px; margin: 8px 0; border-radius: 6px; 
-                        border-left: 3px solid {color_hex}; 
-                        background: #F9FAFB;">
-                <b style='color: {color_hex};'>{class_name.capitalize()}</b><br>
-                <span style='font-size: 12px; color: #6B7280;'>{percent:.1f}% • {area_km2:.2f} km²</span>
+                        background: rgba(26, 26, 46, 0.5); border: 1px solid #3F3F5F;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 16px; height: 16px; border-radius: 3px; 
+                                background-color: {color_hex}; flex-shrink: 0;"></div>
+                    <div >
+                        <b style='color: var(--text-primary);'>{class_name.capitalize()}</b><br>
+                        <span style='font-size: 12px; color: var(--text-secondary);'>{percent:.1f}% • {area_km2:.2f} km²</span>
+                    </div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
     
