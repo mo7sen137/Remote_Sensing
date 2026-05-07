@@ -7,6 +7,160 @@ import os
 import numpy as np
 from typing import Dict, Tuple, List
 import tifffile
+from io import BytesIO
+
+
+# ============================================================================
+# FILE VALIDATION - Secure File Upload Validation
+# ============================================================================
+
+class FileValidator:
+    """
+    Comprehensive file validation for uploaded files.
+    Prevents malicious uploads and corrupted data.
+    """
+    
+    # Configuration
+    MAX_FILE_SIZE_MB = 100  # Maximum 100MB per file
+    MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+    ALLOWED_EXTENSIONS = {'.tif', '.tiff', '.txt'}
+    MAX_DIMENSION = 5000  # Maximum 5000x5000 pixels
+    MIN_DIMENSION = 100   # Minimum 100x100 pixels
+    
+    @staticmethod
+    def validate_geotiff_file(file_obj, filename: str) -> Tuple[bool, str]:
+        """
+        Validate GeoTIFF file for security and integrity.
+        
+        Args:
+            file_obj: File object from streamlit uploader
+            filename: Original filename
+            
+        Returns:
+            Tuple of (is_valid, message)
+        """
+        try:
+            # 1. Check file extension
+            if not any(filename.lower().endswith(ext) for ext in ['.tif', '.tiff']):
+                return False, f"❌ Invalid file type. Expected .tif or .tiff, got {os.path.splitext(filename)[1]}"
+            
+            # 2. Check file size
+            file_size = len(file_obj.getbuffer()) if hasattr(file_obj, 'getbuffer') else len(file_obj)
+            if file_size > FileValidator.MAX_FILE_SIZE_BYTES:
+                size_mb = file_size / (1024 * 1024)
+                return False, f"❌ File too large: {size_mb:.1f}MB (max: {FileValidator.MAX_FILE_SIZE_MB}MB)"
+            
+            if file_size < 1024:  # Less than 1KB
+                return False, "❌ File too small (possibly empty or corrupted)"
+            
+            # 3. Validate file content
+            try:
+                file_bytes = file_obj.getbuffer() if hasattr(file_obj, 'getbuffer') else file_obj.read()
+                with tifffile.TiffFile(BytesIO(file_bytes)) as tif:
+                    # Check if it's a valid TIFF
+                    if not tif.is_tiled and len(tif.pages) == 0:
+                        return False, "❌ Invalid TIFF file (no pages)"
+                    
+                    # Get image dimensions
+                    page = tif.pages[0]
+                    height, width = page.shape[:2]
+                    
+                    # Validate dimensions
+                    if width < FileValidator.MIN_DIMENSION or height < FileValidator.MIN_DIMENSION:
+                        return False, f"❌ Image too small: {width}x{height} (min: {FileValidator.MIN_DIMENSION}x{FileValidator.MIN_DIMENSION})"
+                    
+                    if width > FileValidator.MAX_DIMENSION or height > FileValidator.MAX_DIMENSION:
+                        return False, f"❌ Image too large: {width}x{height} (max: {FileValidator.MAX_DIMENSION}x{FileValidator.MAX_DIMENSION})"
+                    
+                    # Check for reasonable data type (uint8, uint16, float32, float64)
+                    dtype_str = str(page.dtype)
+                    valid_dtypes = ['uint8', 'uint16', 'uint32', 'float32', 'float64', 'int16', 'int32']
+                    if not any(dt in dtype_str for dt in valid_dtypes):
+                        return False, f"❌ Unsupported data type: {page.dtype}"
+                    
+                    return True, f"✅ Valid GeoTIFF: {width}x{height} pixels, {page.dtype}"
+                    
+            except Exception as e:
+                return False, f"❌ File is corrupted or not a valid TIFF: {str(e)}"
+        
+        except Exception as e:
+            return False, f"❌ Validation error: {str(e)}"
+    
+    @staticmethod
+    def validate_mtl_file(file_obj, filename: str) -> Tuple[bool, str]:
+        """
+        Validate MTL metadata file.
+        
+        Args:
+            file_obj: File object from streamlit uploader
+            filename: Original filename
+            
+        Returns:
+            Tuple of (is_valid, message)
+        """
+        try:
+            # Check extension
+            if not filename.lower().endswith('.txt'):
+                return False, "❌ MTL file must be .txt format"
+            
+            # Check file size (MTL files are usually < 1MB)
+            file_size = len(file_obj.getbuffer()) if hasattr(file_obj, 'getbuffer') else len(file_obj)
+            if file_size > 5 * 1024 * 1024:  # 5MB max
+                return False, "❌ MTL file too large (max 5MB)"
+            
+            if file_size < 100:  # Less than 100 bytes
+                return False, "❌ MTL file too small (possibly corrupted)"
+            
+            # Read and validate content
+            content = file_obj.read().decode('utf-8', errors='ignore')
+            
+            # Check for required MTL keys
+            required_keys = ['LANDSAT_SCENE_ID', 'RADIANCE', 'REFLECTANCE']
+            has_required = any(key in content for key in required_keys)
+            
+            if not has_required:
+                return False, "❌ MTL file missing required Landsat metadata"
+            
+            return True, "✅ Valid MTL metadata file"
+        
+        except Exception as e:
+            return False, f"❌ MTL validation error: {str(e)}"
+    
+    @staticmethod
+    def validate_band_consistency(bands: Dict[int, np.ndarray]) -> Tuple[bool, str]:
+        """
+        Validate that all bands have consistent dimensions.
+        
+        Args:
+            bands: Dictionary of loaded band arrays
+            
+        Returns:
+            Tuple of (is_valid, message)
+        """
+        try:
+            if not bands:
+                return False, "❌ No bands provided"
+            
+            # Get first band dimensions
+            first_band = next(iter(bands.values()))
+            expected_shape = first_band.shape
+            
+            # Check all bands match
+            for band_num, band_data in bands.items():
+                if band_data.shape != expected_shape:
+                    return False, f"❌ Band {band_num} has inconsistent shape: {band_data.shape} vs expected {expected_shape}"
+                
+                # Check for NaN values
+                if np.isnan(band_data).any():
+                    nan_count = np.isnan(band_data).sum()
+                    if nan_count > len(band_data.flat) * 0.1:  # More than 10% NaN
+                        return False, f"❌ Band {band_num} has too many NaN values ({nan_count})"
+            
+            return True, f"✅ All {len(bands)} bands are consistent: {expected_shape}"
+        
+        except Exception as e:
+            return False, f"❌ Consistency check error: {str(e)}"
+
 
 
 class LandsatFileHandler:
