@@ -18,7 +18,7 @@ matplotlib>=3.7.0
 plotly>=5.16.0
 
 # Excel Export
-openpyxl>=3.10.0  # For Excel file generation
+openpyxl>=3.1.0  # For Excel file generation
 
 # Optional: Computer Vision (uncomment if needed)
 # opencv-python>=4.8.0  # Can be heavy on Streamlit Cloud

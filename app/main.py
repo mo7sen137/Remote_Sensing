@@ -1064,7 +1064,7 @@ def page_classification():
         """, unsafe_allow_html=True)
         
         # Classification button
-        if st.button("Execute Classification", key="classify_btn", use_container_width=True):
+        if st.button("Execute Classification", key="classify_btn", width='stretch'):
             if not roi_file:
                 st.error("❌ Please upload ROI training data first")
                 return
@@ -1273,7 +1273,7 @@ def page_results():
         color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
         
         # Display the image
-        st.image(color_map.astype(np.uint8), use_column_width=True, caption="Land Cover Classification Map")
+        st.image(color_map.astype(np.uint8), width=None, caption="Land Cover Classification Map")
     
     with col2:
         st.markdown("""
@@ -1326,7 +1326,7 @@ def page_results():
                 predictions['model_name']
             ]
         })
-        st.dataframe(model_metrics, use_container_width=True, hide_index=True)
+        st.dataframe(model_metrics, width='stretch', hide_index=True)
     
     st.divider()
     
@@ -1335,7 +1335,7 @@ def page_results():
     
     if 'area_stats' in statistics:
         area_df = statistics['area_stats']
-        st.dataframe(area_df, use_container_width=True, hide_index=True)
+        st.dataframe(area_df, width='stretch', hide_index=True)
         
         # Visualize statistics
         col1, col2 = st.columns(2, gap="medium")
@@ -1360,7 +1360,7 @@ def page_results():
     # 1. Download Classification Map (PNG)
     with col1:
         st.markdown("**Classification Map**")
-        if st.button("📥 PNG", key="btn_map", use_container_width=True):
+        if st.button("📥 PNG", key="btn_map", width='stretch'):
             import io
             from PIL import Image as PILImage
             
@@ -1382,7 +1382,7 @@ def page_results():
     # 2. Download Area Statistics (Excel)
     with col2:
         st.markdown("**Area Statistics**")
-        if st.button("📊 Excel", key="btn_area", use_container_width=True):
+        if st.button("📊 Excel", key="btn_area", width='stretch'):
             try:
                 # Create Excel file
                 excel_buffer = io.BytesIO()
@@ -1404,7 +1404,7 @@ def page_results():
     # 3. Download Model Statistics (Excel)
     with col3:
         st.markdown("**Model Statistics**")
-        if st.button("🤖 Excel", key="btn_model", use_container_width=True):
+        if st.button("🤖 Excel", key="btn_model", width='stretch'):
             try:
                 # Create comprehensive model stats
                 model_stats = pd.DataFrame({
@@ -1435,7 +1435,7 @@ def page_results():
     # 4. Download Report (TXT)
     with col4:
         st.markdown("**Full Report**")
-        if st.button("📄 TXT", key="btn_report", use_container_width=True):
+        if st.button("📄 TXT", key="btn_report", width='stretch'):
             report = f"""
 {'='*60}
 REMOTE SENSING CLASSIFICATION REPORT
