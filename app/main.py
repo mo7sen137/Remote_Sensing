@@ -889,29 +889,66 @@ def page_preview():
     st.markdown("# Data Preview & Analysis")
     
     if not st.session_state.uploaded_bands:
-        st.warning("Please upload bands first in the Upload Data tab")
+        st.warning("Please upload bands CSV file first in the Upload Data tab")
         return
     
-    st.markdown("## Band Information")
+    st.markdown("## Upload Summary")
     
     col1, col2, col3 = st.columns(3, gap="medium")
     
     with col1:
-        st.markdown("### Available Bands")
-        for band_num in st.session_state.uploaded_bands.keys():
-            st.text(f"✓ Band {band_num}")
+        st.metric("Bands File", "✓ Loaded" if st.session_state.uploaded_bands else "✗ Missing")
     
     with col2:
-        st.markdown("### Spectral Indices")
-        st.text("• NDVI - Vegetation")
-        st.text("• NDWI - Water")
-        st.text("• NDBI - Urban")
+        st.metric("Metadata File", "✓ Loaded" if st.session_state.mtl_data else "✗ Missing")
     
     with col3:
-        st.markdown("### Processing Steps")
-        st.text("1. Radiometric Calibration")
-        st.text("2. Indices Calculation")
-        st.text("3. ML Classification")
+        ready = st.session_state.uploaded_bands and st.session_state.mtl_data
+        st.metric("Status", "Ready ✓" if ready else "Incomplete ⏳")
+    
+    st.markdown("---")
+    
+    st.markdown("## Spectral Bands Information")
+    
+    col1, col2, col3 = st.columns(3, gap="medium")
+    
+    with col1:
+        st.markdown("""
+        <div class='card card-accent'>
+            <h3 style='margin-top: 0;'>📊 Available Bands</h3>
+            <p>Band 1: Coastal/Aerosol</p>
+            <p>Band 2: Blue</p>
+            <p>Band 3: Green</p>
+            <p>Band 4: Red</p>
+            <p>Band 5: NIR</p>
+            <p>Band 6: SWIR1</p>
+            <p>Band 7: SWIR2</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class='card card-accent'>
+            <h3 style='margin-top: 0;'>📈 Spectral Indices</h3>
+            <p>• <b>NDVI</b> - Vegetation Index</p>
+            <p>• <b>NDWI</b> - Water Index</p>
+            <p>• <b>NDBI</b> - Urban Index</p>
+            <p><br></p>
+            <p><small>Calculated from bands automatically</small></p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown("""
+        <div class='card card-accent'>
+            <h3 style='margin-top: 0;'>⚙️ Processing Steps</h3>
+            <p>1. Radiometric Calibration</p>
+            <p>2. Indices Calculation</p>
+            <p>3. Feature Stacking</p>
+            <p>4. ML Classification</p>
+            <p>5. Results Export</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -925,15 +962,21 @@ def page_preview():
         ### NDVI
         $$NDVI = \\frac{NIR - Red}{NIR + Red}$$
         
-        Vegetation index
+        **Use:** Vegetation detection
+        - Values: -1 to +1
+        - High = Dense vegetation
+        - Low/Negative = Water or urban
         """)
     
     with col2:
         st.markdown("""
         ### NDWI
-        $$NDWI = \\frac{NIR - SWIR1}{NIR + SWIR1}$$
+        $$NDWI = \\frac{Green - NIR}{Green + NIR}$$
         
-        Water index
+        **Use:** Water detection
+        - Values: -1 to +1
+        - High = Water bodies
+        - Low = Land areas
         """)
     
     with col3:
@@ -941,8 +984,25 @@ def page_preview():
         ### NDBI
         $$NDBI = \\frac{SWIR1 - NIR}{SWIR1 + NIR}$$
         
-        Urban index
+        **Use:** Urban/Built-up areas
+        - Values: -1 to +1
+        - High = Urban areas
+        - Low = Natural vegetation
         """)
+    
+    st.markdown("---")
+    
+    st.markdown("""
+    <div class='card card-success'>
+        <h3 style='text-align: center; margin-top: 0;'>✅ Ready for Classification?</h3>
+        <p style='text-align: center;'>Your data is loaded and ready! Go to the Classification tab to:</p>
+        <ol style='text-align: center; margin: 0;'>
+            <li>Upload training data (ROI CSV)</li>
+            <li>Select a classification model</li>
+            <li>Run the analysis</li>
+        </ol>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================================
@@ -1309,9 +1369,9 @@ def main():
     
     # Initialize session state
     if 'uploaded_bands' not in st.session_state:
-        st.session_state.uploaded_bands = {}
+        st.session_state.uploaded_bands = None  # CSV file object or None
     if 'mtl_data' not in st.session_state:
-        st.session_state.mtl_data = None
+        st.session_state.mtl_data = None  # BIN file object or None
     if 'predictions' not in st.session_state:
         st.session_state.predictions = None
     if 'statistics' not in st.session_state:
