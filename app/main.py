@@ -31,6 +31,8 @@ import os
 from pathlib import Path
 import json
 import logging
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 # Add parent directory to path for imports
 import sys
@@ -1272,8 +1274,15 @@ def page_results():
         # Create colored map
         color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
         
-        # Display the image
-        st.image(color_map.astype(np.uint8), caption="Land Cover Classification Map")
+        # Display the image using matplotlib (high quality like VS Code)
+        fig, ax = plt.subplots(figsize=(12, 10), dpi=100)
+        ax.imshow(color_map.astype(np.uint8))
+        ax.axis('off')
+        ax.set_title("Land Cover Classification Map", fontsize=16, fontweight='bold', pad=20)
+        plt.tight_layout(pad=0)
+        
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
     
     with col2:
         st.markdown("""
@@ -1308,13 +1317,34 @@ def page_results():
     col1, col2 = st.columns(2, gap="large")
     
     with col1:
-        # Create a simple accuracy curve data
-        accuracy_data = pd.DataFrame({
-            'Metric': ['Training', 'Testing'],
-            'Accuracy': [predictions['train_acc']*100, predictions['test_acc']*100]
-        })
+        # Create professional accuracy curve using matplotlib
+        fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
         
-        st.bar_chart(accuracy_data.set_index('Metric'), height=300)
+        train_acc = predictions['train_acc'] * 100
+        test_acc = predictions['test_acc'] * 100
+        
+        metrics = ['Training', 'Testing']
+        accuracies = [train_acc, test_acc]
+        colors = ['#1f77b4', '#ff7f0e']
+        
+        bars = ax.bar(metrics, accuracies, color=colors, alpha=0.8, width=0.6, edgecolor='black', linewidth=1.5)
+        
+        # Add value labels on top of bars
+        for bar, acc in zip(bars, accuracies):
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height,
+                   f'{acc:.2f}%',
+                   ha='center', va='bottom', fontsize=12, fontweight='bold')
+        
+        ax.set_ylabel('Accuracy (%)', fontsize=12, fontweight='bold')
+        ax.set_title('Model Performance', fontsize=14, fontweight='bold')
+        ax.set_ylim([0, 105])
+        ax.grid(axis='y', alpha=0.3, linestyle='--')
+        ax.set_axisbelow(True)
+        
+        plt.tight_layout()
+        st.pyplot(fig, use_container_width=True)
+        plt.close(fig)
     
     with col2:
         # Model metrics table
@@ -1337,18 +1367,59 @@ def page_results():
         area_df = statistics['area_stats']
         st.dataframe(area_df, width='stretch', hide_index=True)
         
-        # Visualize statistics
+        # Visualize statistics using matplotlib
         col1, col2 = st.columns(2, gap="medium")
         
         with col1:
-            area_chart_data = area_df.set_index('Class')['Area_km2']
-            st.bar_chart(area_chart_data, height=350)
-            st.caption("Area Distribution (km²)")
+            fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+            
+            classes = area_df['Class'].values
+            areas = area_df['Area_km2'].values
+            colors_list = ['#0066FF', '#00CC00', '#FF0000', '#FFAA00']
+            
+            bars = ax.bar(classes, areas, color=colors_list, alpha=0.8, edgecolor='black', linewidth=1.5)
+            
+            # Add value labels on top of bars
+            for bar, area in zip(bars, areas):
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2., height,
+                       f'{area:.1f}',
+                       ha='center', va='bottom', fontsize=11, fontweight='bold')
+            
+            ax.set_ylabel('Area (km²)', fontsize=12, fontweight='bold')
+            ax.set_title('Area Distribution', fontsize=14, fontweight='bold')
+            ax.grid(axis='y', alpha=0.3, linestyle='--')
+            ax.set_axisbelow(True)
+            
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
         
         with col2:
-            percent_chart_data = area_df.set_index('Class')['Percent']
-            st.bar_chart(percent_chart_data, height=350)
-            st.caption("Percentage Distribution (%)")
+            fig, ax = plt.subplots(figsize=(10, 6), dpi=100)
+            
+            classes = area_df['Class'].values
+            percents = area_df['Percent'].values
+            colors_list = ['#0066FF', '#00CC00', '#FF0000', '#FFAA00']
+            
+            bars = ax.bar(classes, percents, color=colors_list, alpha=0.8, edgecolor='black', linewidth=1.5)
+            
+            # Add value labels on top of bars
+            for bar, pct in zip(bars, percents):
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2., height,
+                       f'{pct:.1f}%',
+                       ha='center', va='bottom', fontsize=11, fontweight='bold')
+            
+            ax.set_ylabel('Percentage (%)', fontsize=12, fontweight='bold')
+            ax.set_title('Percentage Distribution', fontsize=14, fontweight='bold')
+            ax.set_ylim([0, 105])
+            ax.grid(axis='y', alpha=0.3, linestyle='--')
+            ax.set_axisbelow(True)
+            
+            plt.tight_layout()
+            st.pyplot(fig, use_container_width=True)
+            plt.close(fig)
     
     st.divider()
     
