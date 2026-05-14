@@ -242,10 +242,10 @@ class ClassificationMapper:
     
     CLASS_NAMES = {1: 'Water', 2: 'Vegetation', 3: 'Urban', 4: 'Desert'}
     CLASS_COLORS = {
-        1: [0, 0, 255],      # Water - Blue
-        2: [0, 255, 0],      # Vegetation - Green
-        3: [255, 0, 0],      # Urban - Red
-        4: [255, 165, 0]     # Desert - Orange
+        1: [0, 0, 1],        # Water - Blue (normalized)
+        2: [0, 1, 0],        # Vegetation - Green (normalized)
+        3: [1, 0, 0],        # Urban - Red (normalized)
+        4: [1, 0.647, 0]     # Desert - Orange (normalized)
     }
     
     @staticmethod
@@ -277,19 +277,22 @@ class ClassificationMapper:
             no_data_mask: Boolean mask for no-data pixels
             
         Returns:
-            RGB image array
+            RGB image array (0-1 normalized for matplotlib)
         """
         rows, cols = class_map.shape
         color_map = np.zeros((rows, cols, 3), dtype=np.float32)
         
-        # Apply colors for each class
+        # Apply colors for each class (normalized 0-1)
         for class_id, color in ClassificationMapper.CLASS_COLORS.items():
             mask = (class_map == class_id)
             color_map[mask] = color
         
         # Set no-data to black
         if no_data_mask is not None:
-            color_map[no_data_mask] = 0
+            color_map[no_data_mask] = [0, 0, 0]
+        
+        # Ensure all values are in 0-1 range for matplotlib
+        color_map = np.clip(color_map, 0, 1)
         
         return color_map
     

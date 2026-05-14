@@ -1276,7 +1276,7 @@ def page_results():
         
         # Display the image using matplotlib (high quality like VS Code)
         fig, ax = plt.subplots(figsize=(12, 10), dpi=100)
-        ax.imshow(color_map.astype(np.uint8))
+        ax.imshow(color_map)  # color_map is already normalized 0-1
         ax.axis('off')
         ax.set_title("Land Cover Classification Map", fontsize=16, fontweight='bold', pad=20)
         plt.tight_layout(pad=0)
@@ -1435,7 +1435,8 @@ def page_results():
             import io
             from PIL import Image as PILImage
             
-            color_map_uint8 = color_map.astype(np.uint8)
+            # Convert normalized (0-1) to uint8 (0-255)
+            color_map_uint8 = (color_map * 255).astype(np.uint8)
             pil_image = PILImage.fromarray(color_map_uint8, 'RGB')
             
             buffer = io.BytesIO()
