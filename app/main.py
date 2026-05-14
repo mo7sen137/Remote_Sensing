@@ -37,6 +37,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import config
 from src.utils import FileValidator  # Import file validation
+from src.model_trainer import FeatureExtractor, ModelTrainer, ClassificationMapper  # Import ML modules
+
+# ML imports
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neural_network import MLPClassifier
 
 # Setup logging for security & debugging
 logging.basicConfig(
@@ -951,7 +959,7 @@ def page_classification():
         st.markdown("""
         <div class='card'>
             <h3 style='text-align: center;'>Missing Data</h3>
-            <p style='text-align: center;'>Please upload satellite bands first in the Upload tab</p>
+            <p style='text-align: center;'>Please upload satellite bands and metadata first in the Upload tab</p>
         </div>
         """, unsafe_allow_html=True)
         return
@@ -968,8 +976,17 @@ def page_classification():
         # Model selection
         model_choice = st.selectbox(
             "Select ML Model:",
-            ["Random Forest (Recommended)", "Support Vector Machine", "K-Nearest Neighbors"],
+            ["Random Forest (Recommended)", "Support Vector Machine", "K-Nearest Neighbors", "Decision Tree", "Neural Network (MLP)"],
             help="Choose the classifier for optimal results"
+        )
+        
+        # ROI data input
+        st.markdown("**Training Data (ROI)**")
+        roi_file = st.file_uploader(
+            "Upload ROI CSV file",
+            type=['csv'],
+            key="roi_file",
+            help="CSV with columns: B1-B7 (band values) and Class_Label"
         )
         
         st.markdown("""
@@ -978,36 +995,155 @@ def page_classification():
             <ul style='margin: 0; padding-left: 20px; font-size: 14px;'>
             <li>Load and validate bands</li>
             <li>Apply radiometric calibration</li>
-            <li>Extract 10 features</li>
-            <li>Run """ + model_choice.split("(")[0].strip() + """ classifier</li>
-            <li>Generate colored map</li>
+            <li>Extract spectral indices (NDVI, NDWI, NDBI)</li>
+            <li>Train """ + model_choice.split("(")[0].strip() + """ classifier</li>
+            <li>Generate colored classification map</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
         
         # Classification button
         if st.button("Execute Classification", key="classify_btn", use_container_width=True):
-            with st.spinner("Processing... This may take a few minutes..."):
-                st.progress(0.2, text="Loading bands...")
-                st.progress(0.4, text="Calibrating data...")
-                st.progress(0.6, text="Computing indices...")
-                st.progress(0.8, text="Running classification...")
-                st.progress(1.0, text="Generating map...")
+            if not roi_file:
+                st.error("❌ Please upload ROI training data first")
+                return
             
-            st.success("Classification complete!")
-            st.session_state.predictions = "dummy"
-            st.session_state.statistics = "dummy"
+            try:
+                with st.spinner("Processing satellite data..."):
+                    # Progress tracking
+                    progress_placeholder = st.progress(0)
+                    status_placeholder = st.empty()
+                    
+                    # ========== Step 1: Load bands from CSV ==========
+                    status_placeholder.text("📊 Loading bands from CSV...")
+                    progress_placeholder.progress(0.15)
+                    
+                    bands_df = pd.read_csv(st.session_state.uploaded_bands)
+                    # Extract band columns (B1-B7)
+                    bands_data = [bands_df[f'B{i+1}'].values.astype(np.uint16) for i in range(7)]
+                    
+                    # Get image dimensions from first band
+                    rows, cols = len(bands_data[0]), 1
+                    
+                    # ========== Step 2: Calibrate bands ==========
+                    status_placeholder.text("🔧 Calibrating radiometric data...")
+                    progress_placeholder.progress(0.3)
+                    
+                    B_cal = FeatureExtractor.calibrate_bands(bands_data)
+                    
+                    # ========== Step 3: Calculate indices ==========
+                    status_placeholder.text("📈 Computing spectral indices...")
+                    progress_placeholder.progress(0.45)
+                    
+                    NDVI, NDWI, NDBI = FeatureExtractor.calculate_indices(B_cal)
+                    
+                    # ========== Step 4: Create feature stack ==========
+                    status_placeholder.text("🧩 Stacking features...")
+                    progress_placeholder.progress(0.55)
+                    
+                    # Reshape bands to (rows, cols, 7) format
+                    n_samples = len(bands_data[0])
+                    B_cal_reshaped = [b.reshape(-1, 1) for b in B_cal]
+                    NDVI_reshaped = NDVI.reshape(-1, 1)
+                    NDWI_reshaped = NDWI.reshape(-1, 1)
+                    NDBI_reshaped = NDBI.reshape(-1, 1)
+                    
+                    features = np.hstack(B_cal_reshaped + [NDVI_reshaped, NDWI_reshaped, NDBI_reshaped])
+                    features = features.reshape(n_samples, 1, 10)  # (n_samples, width=1, 10 features)
+                    
+                    # ========== Step 5: Load ROI data ==========
+                    status_placeholder.text("📍 Loading training data...")
+                    progress_placeholder.progress(0.65)
+                    
+                    roi_df = pd.read_csv(roi_file)
+                    
+                    # ========== Step 6: Train model ==========
+                    status_placeholder.text("🤖 Training classifier...")
+                    progress_placeholder.progress(0.75)
+                    
+                    trainer = ModelTrainer()
+                    X_train_n, X_test_n, Y_train, Y_test = trainer.prepare_training_data(
+                        roi_df, B_cal, NDVI, NDWI, NDBI
+                    )
+                    
+                    # Train selected model
+                    model_map = {
+                        "Random Forest (Recommended)": RandomForestClassifier(n_estimators=50),
+                        "Support Vector Machine": SVC(),
+                        "K-Nearest Neighbors": KNeighborsClassifier(n_neighbors=5),
+                        "Decision Tree": DecisionTreeClassifier(),
+                        "Neural Network (MLP)": MLPClassifier(hidden_layer_sizes=(128, 64))
+                    }
+                    
+                    selected_model = model_map[model_choice]
+                    selected_model.fit(X_train_n, Y_train)
+                    
+                    train_acc = selected_model.score(X_train_n, Y_train)
+                    test_acc = selected_model.score(X_test_n, Y_test)
+                    
+                    # ========== Step 7: Generate predictions ==========
+                    status_placeholder.text("🗺️ Generating classification map...")
+                    progress_placeholder.progress(0.9)
+                    
+                    # Reshape features for prediction
+                    X_full = features.reshape(-1, 10)
+                    Y_pred = selected_model.predict(X_full)
+                    
+                    # Store in session state
+                    st.session_state.predictions = {
+                        'class_map': Y_pred.reshape(n_samples, 1),
+                        'model_name': model_choice.split("(")[0].strip(),
+                        'train_acc': train_acc,
+                        'test_acc': test_acc,
+                        'Y_true': Y_test,
+                        'Y_pred_test': selected_model.predict(X_test_n)
+                    }
+                    
+                    # Calculate statistics
+                    class_map = Y_pred.reshape(n_samples, 1)
+                    area_stats = ClassificationMapper.calculate_area_statistics(class_map)
+                    
+                    st.session_state.statistics = {
+                        'area_stats': area_stats,
+                        'model_stats': pd.DataFrame({
+                            'Metric': ['Training Accuracy', 'Testing Accuracy'],
+                            'Value': [train_acc, test_acc]
+                        })
+                    }
+                    
+                    progress_placeholder.progress(1.0)
+                    status_placeholder.text("✅ Classification complete!")
+                
+                st.success("✅ Classification complete! Check the Results tab to view predictions.")
+                
+            except Exception as e:
+                st.error(f"❌ Error during classification: {str(e)}")
+                logger.error(f"Classification error: {str(e)}")
     
     with col2:
         st.markdown("""
         <div class='card card-success'>
-            <h3 style='margin-top: 0;'>Job Info</h3>
+            <h3 style='margin-top: 0;'>📊 Job Info</h3>
         </div>
         """, unsafe_allow_html=True)
         
         st.metric("Model", model_choice.split("(")[0].strip())
         st.metric("Classes", "4")
-        st.metric("Status", "Ready" if st.session_state.uploaded_bands else "Waiting")
+        st.metric("Status", "Ready ✓" if st.session_state.uploaded_bands else "⏳ Waiting")
+        
+        st.divider()
+        
+        st.markdown("""
+        <div style='background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #8B5CF6;'>
+            <p style='margin: 0; font-size: 12px; color: var(--text-secondary);'>
+                <b>ℹ️ Classes:</b><br>
+                🔵 Water<br>
+                🟢 Vegetation<br>
+                🔴 Urban<br>
+                🟠 Desert
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ============================================================================
@@ -1023,111 +1159,144 @@ def page_results():
     if not st.session_state.predictions:
         st.markdown("""
         <div class='card'>
-            <h3 style='text-align: center;'>No Data Available</h3>
+            <h3 style='text-align: center;'>📭 No Data Available</h3>
             <p style='text-align: center;'>Execute classification first in the Classification tab to view results</p>
         </div>
         """, unsafe_allow_html=True)
         return
     
+    predictions = st.session_state.predictions
+    statistics = st.session_state.statistics
+    
+    # Display model metrics
+    st.markdown("<h2>Model Performance</h2>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3, gap="medium")
+    
+    with col1:
+        st.metric("Selected Model", predictions['model_name'])
+    
+    with col2:
+        st.metric("Training Accuracy", f"{predictions['train_acc']*100:.2f}%")
+    
+    with col3:
+        st.metric("Testing Accuracy", f"{predictions['test_acc']*100:.2f}%")
+    
+    st.divider()
+    
+    # Classification map visualization
     col1, col2 = st.columns([2, 1], gap="large")
     
     with col1:
-        st.markdown("<h2 style='margin-bottom: 16px;'>Classification Map</h2>", unsafe_allow_html=True)
+        st.markdown("<h2>Classification Map</h2>", unsafe_allow_html=True)
         
-        # Create dummy classification map
-        classification_map = np.random.choice([0, 1, 2, 3], (500, 500))
-        color_map = np.zeros((500, 500, 3), dtype=np.uint8)
+        # Create colored map
+        class_map = predictions['class_map']
+        color_map = ClassificationMapper.create_colored_map(class_map)
         
-        # Apply colors
-        color_map[classification_map == 0] = config.COLOR_PALETTE['water']
-        color_map[classification_map == 1] = config.COLOR_PALETTE['agriculture']
-        color_map[classification_map == 2] = config.COLOR_PALETTE['urban']
-        color_map[classification_map == 3] = config.COLOR_PALETTE['desert']
-        
-        st.image(color_map, use_column_width=True, caption="Land Cover Classification Results")
+        st.image(color_map.astype(np.uint8), use_column_width=True, caption="Land Cover Classification Results")
     
     with col2:
         st.markdown("""
         <div class='card card-accent'>
-            <h3 style='margin-top: 0;'>Land Cover Legend</h3>
+            <h3 style='margin-top: 0;'>🎨 Color Legend</h3>
         </div>
         """, unsafe_allow_html=True)
         
-        for class_id, class_name in config.CLASS_NAMES.items():
-            color_hex = config.HEX_COLORS[class_name]
-            count = np.sum(classification_map == class_id)
-            area_km2 = count * config.KM_CONVERSION
-            percent = (count / classification_map.size) * 100
-            
+        legend_data = [
+            ("🔵 Water", [0, 0, 255]),
+            ("🟢 Vegetation", [0, 255, 0]),
+            ("🔴 Urban", [255, 0, 0]),
+            ("🟠 Desert", [255, 165, 0])
+        ]
+        
+        for label, rgb_color in legend_data:
+            color_hex = '#{:02x}{:02x}{:02x}'.format(int(rgb_color[0]), int(rgb_color[1]), int(rgb_color[2]))
             st.markdown(f"""
             <div style="padding: 10px; margin: 8px 0; border-radius: 6px; 
-                        background: rgba(26, 26, 46, 0.5); border: 1px solid #3F3F5F;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="width: 16px; height: 16px; border-radius: 3px; 
-                                background-color: {color_hex}; flex-shrink: 0;"></div>
-                    <div >
-                        <b style='color: var(--text-primary);'>{class_name.capitalize()}</b><br>
-                        <span style='font-size: 12px; color: var(--text-secondary);'>{percent:.1f}% • {area_km2:.2f} km²</span>
-                    </div>
-                </div>
+                        background: rgba(26, 26, 46, 0.5); border-left: 4px solid {color_hex};">
+                <p style="margin: 0; color: var(--text-primary); font-weight: 600; font-size: 13px;">
+                    {label}
+                </p>
             </div>
             """, unsafe_allow_html=True)
     
     st.divider()
     
-    # Statistics table
-    st.markdown("<h2>Detailed Statistics</h2>", unsafe_allow_html=True)
+    # Area statistics
+    st.markdown("<h2>📊 Land Cover Statistics</h2>", unsafe_allow_html=True)
     
-    stats_data = []
-    for class_id, class_name in config.CLASS_NAMES.items():
-        count = np.sum(classification_map == class_id)
-        area_km2 = count * config.KM_CONVERSION
-        percent = (count / classification_map.size) * 100
+    if 'area_stats' in statistics:
+        area_df = statistics['area_stats']
+        st.dataframe(area_df, use_container_width=True, hide_index=True)
         
-        stats_data.append({
-            "Category": class_name.capitalize(),
-            "Pixels": f"{count:,}",
-            "Area (km²)": f"{area_km2:.2f}",
-            "Percentage": f"{percent:.2f}%",
-            "Confidence": f"{np.random.randint(85, 99)}%"
-        })
-    
-    st.dataframe(pd.DataFrame(stats_data), use_container_width=True)
+        # Visualize statistics
+        col1, col2 = st.columns(2, gap="medium")
+        
+        with col1:
+            st.bar_chart(area_df.set_index('Class')['Area_km2'], height=400)
+        
+        with col2:
+            st.bar_chart(area_df.set_index('Class')['Percent'], height=400)
     
     st.divider()
     
-    # Download buttons
-    st.markdown("<h3>Export & Download</h3>", unsafe_allow_html=True)
+    # Download options
+    st.markdown("<h2>📥 Export & Download</h2>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3, gap="medium")
     
     with col1:
-        st.download_button(
-            "Download Map (PNG)",
-            data=b"placeholder_image_data",
-            file_name="classification_map.png",
-            mime="image/png",
-            use_container_width=True
-        )
+        if st.button("Download Classification Map (PNG)", use_container_width=True):
+            import io
+            from PIL import Image as PILImage
+            
+            # Convert to PIL Image
+            color_map_uint8 = (color_map).astype(np.uint8)
+            pil_image = PILImage.fromarray(color_map_uint8, 'RGB')
+            
+            # Save to bytes
+            buffer = io.BytesIO()
+            pil_image.save(buffer, format='PNG')
+            buffer.seek(0)
+            
+            st.download_button(
+                label="💾 Click to Download",
+                data=buffer,
+                file_name="classification_map.png",
+                mime="image/png"
+            )
     
     with col2:
-        csv_data = pd.DataFrame(stats_data).to_csv(index=False)
-        st.download_button(
-            "Download Statistics (CSV)",
-            data=csv_data,
-            file_name="area_statistics.csv",
-            mime="text/csv",
-            use_container_width=True
-        )
+        if st.button("Download Statistics (CSV)", use_container_width=True):
+            csv = statistics['area_stats'].to_csv(index=False)
+            st.download_button(
+                label="💾 Click to Download",
+                data=csv,
+                file_name="area_statistics.csv",
+                mime="text/csv"
+            )
     
     with col3:
-        st.download_button(
-            "Download Report (JSON)",
-            data=json.dumps({"status": "completed", "classes": 4}, indent=2),
-            file_name="classification_report.json",
-            mime="application/json",
-            use_container_width=True
-        )
+        if st.button("Download Model Report (TXT)", use_container_width=True):
+            report = f"""
+CLASSIFICATION REPORT
+=====================
+
+Model: {predictions['model_name']}
+Training Accuracy: {predictions['train_acc']*100:.2f}%
+Testing Accuracy: {predictions['test_acc']*100:.2f}%
+
+AREA STATISTICS
+===============
+{statistics['area_stats'].to_string(index=False)}
+            """
+            st.download_button(
+                label="💾 Click to Download",
+                data=report,
+                file_name="classification_report.txt",
+                mime="text/plain"
+            )
 
 
 # ============================================================================
