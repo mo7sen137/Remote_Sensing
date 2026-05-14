@@ -1395,7 +1395,7 @@ def page_results():
                 predictions['model_name']
             ]
         })
-        st.dataframe(model_metrics, width='stretch', hide_index=True)
+        st.dataframe(model_metrics, use_container_width=True, hide_index=True)
     
     st.divider()
     
@@ -1404,7 +1404,7 @@ def page_results():
     
     if 'area_stats' in statistics:
         area_df = statistics['area_stats']
-        st.dataframe(area_df, width='stretch', hide_index=True)
+        st.dataframe(area_df, use_container_width=True, hide_index=True)
         
         # Visualize statistics using matplotlib
         col1, col2 = st.columns(2, gap="medium")
