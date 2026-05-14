@@ -263,7 +263,9 @@ class ClassificationMapper:
         """
         X_full = features.reshape(-1, features.shape[2])
         Y_pred = model.predict(X_full)
-        class_map = Y_pred.reshape(rows, cols)
+        # ✅ FIX: Use order='F' to match MATLAB reshape order (Fortran-order)
+        # MATLAB uses column-major order, Python NumPy uses row-major (C-order) by default
+        class_map = Y_pred.reshape(rows, cols, order='F')
         
         return class_map
     

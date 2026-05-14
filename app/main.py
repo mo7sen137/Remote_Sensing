@@ -1377,7 +1377,7 @@ def page_results():
     if padded_size > n_pixels:
         class_map = np.pad(class_map, (0, padded_size - n_pixels), mode='constant', constant_values=0)
     
-    class_map_reshaped = class_map[:padded_size].reshape(side_length, side_length)
+    class_map_reshaped = class_map[:padded_size].reshape(side_length, side_length, order='F')
     
     # Create colored map
     color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
