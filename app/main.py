@@ -1136,7 +1136,31 @@ def page_classification():
                     status_placeholder.text("📊 Loading bands from CSV...")
                     progress_placeholder.progress(0.15)
                     
-                    bands_df = pd.read_csv(st.session_state.uploaded_bands)
+                    # ✅ Check if bands file is empty
+                    if st.session_state.uploaded_bands.size == 0:
+                        st.error("❌ Bands file is empty. Please upload valid data.")
+                        return
+                    
+                    try:
+                        bands_df = pd.read_csv(st.session_state.uploaded_bands)
+                    except pd.errors.EmptyDataError:
+                        st.error("❌ Bands file is empty. Cannot parse CSV.")
+                        return
+                    except Exception as e:
+                        st.error(f"❌ Error reading bands file: {str(e)}")
+                        return
+                    
+                    # ✅ Validate that required columns exist
+                    required_cols = [f'B{i+1}' for i in range(7)]
+                    missing_cols = [col for col in required_cols if col not in bands_df.columns]
+                    if missing_cols:
+                        st.error(f"❌ Missing columns in bands file: {', '.join(missing_cols)}")
+                        return
+                    
+                    # ✅ Check if dataframe has any rows
+                    if len(bands_df) == 0:
+                        st.error("❌ Bands file has no data rows. Please upload valid satellite data.")
+                        return
                     # Extract band columns (B1-B7)
                     bands_data = [bands_df[f'B{i+1}'].values.astype(np.uint16) for i in range(7)]
                     
@@ -1173,7 +1197,31 @@ def page_classification():
                     status_placeholder.text("📍 Loading training data...")
                     progress_placeholder.progress(0.65)
                     
-                    roi_df = pd.read_csv(roi_file)
+                    # ✅ Check if ROI file is empty
+                    if roi_file.size == 0:
+                        st.error("❌ ROI file is empty. Please upload valid training data.")
+                        return
+                    
+                    try:
+                        roi_df = pd.read_csv(roi_file)
+                    except pd.errors.EmptyDataError:
+                        st.error("❌ ROI file is empty. Cannot parse CSV.")
+                        return
+                    except Exception as e:
+                        st.error(f"❌ Error reading ROI file: {str(e)}")
+                        return
+                    
+                    # ✅ Validate ROI data
+                    if len(roi_df) == 0:
+                        st.error("❌ ROI file has no data rows. Please upload valid training samples.")
+                        return
+                    
+                    required_roi_cols = [f'B{i+1}' for i in range(7)] + ['Class_Label']
+                    missing_roi_cols = [col for col in required_roi_cols if col not in roi_df.columns]
+                    if missing_roi_cols:
+                        st.error(f"❌ Missing columns in ROI file: {', '.join(missing_roi_cols)}")
+                        st.info("Expected columns: B1-B7 (band values) and Class_Label (target)")
+                        return
                     
                     # ========== Step 6: Train model ==========
                     status_placeholder.text("🤖 Training classifier...")
