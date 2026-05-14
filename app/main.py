@@ -25,6 +25,7 @@ Accessibility:
 import streamlit as st
 import numpy as np
 import pandas as pd
+import io
 from PIL import Image
 import os
 from pathlib import Path
@@ -1229,7 +1230,7 @@ def page_results():
     statistics = st.session_state.statistics
     
     # Display model metrics
-    st.markdown("<h2>Model Performance</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>🤖 Model Performance</h2>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3, gap="medium")
     
@@ -1245,21 +1246,39 @@ def page_results():
     st.divider()
     
     # Classification map visualization
-    col1, col2 = st.columns([2, 1], gap="large")
+    st.markdown("<h2>🗺️ Classification Map</h2>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([3, 1], gap="large")
     
     with col1:
-        st.markdown("<h2>Classification Map</h2>", unsafe_allow_html=True)
+        # Create colored map - FIXED VERSION
+        class_map = predictions['class_map'].flatten()  # Flatten to 1D
+        
+        # Determine image dimensions based on data
+        n_pixels = len(class_map)
+        # Try to make a roughly square image
+        side_length = int(np.sqrt(n_pixels))
+        
+        # If we can't make a perfect square, pad the data
+        if side_length * side_length < n_pixels:
+            side_length += 1
+        
+        padded_size = side_length * side_length
+        if padded_size > n_pixels:
+            class_map = np.pad(class_map, (0, padded_size - n_pixels), mode='constant', constant_values=0)
+        
+        class_map_reshaped = class_map[:padded_size].reshape(side_length, side_length)
         
         # Create colored map
-        class_map = predictions['class_map']
-        color_map = ClassificationMapper.create_colored_map(class_map)
+        color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
         
-        st.image(color_map.astype(np.uint8), use_column_width=True, caption="Land Cover Classification Results")
+        # Display the image
+        st.image(color_map.astype(np.uint8), use_column_width=True, caption="Land Cover Classification Map")
     
     with col2:
         st.markdown("""
         <div class='card card-accent'>
-            <h3 style='margin-top: 0;'>🎨 Color Legend</h3>
+            <h3 style='margin-top: 0;'>🎨 Legend</h3>
         </div>
         """, unsafe_allow_html=True)
         
@@ -1273,13 +1292,41 @@ def page_results():
         for label, rgb_color in legend_data:
             color_hex = '#{:02x}{:02x}{:02x}'.format(int(rgb_color[0]), int(rgb_color[1]), int(rgb_color[2]))
             st.markdown(f"""
-            <div style="padding: 10px; margin: 8px 0; border-radius: 6px; 
+            <div style="padding: 8px; margin: 6px 0; border-radius: 6px; 
                         background: rgba(26, 26, 46, 0.5); border-left: 4px solid {color_hex};">
-                <p style="margin: 0; color: var(--text-primary); font-weight: 600; font-size: 13px;">
+                <p style="margin: 0; color: var(--text-primary); font-weight: 600; font-size: 12px;">
                     {label}
                 </p>
             </div>
             """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Accuracy curve (if available from MLP training)
+    st.markdown("<h2>📈 Training Progress</h2>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns(2, gap="large")
+    
+    with col1:
+        # Create a simple accuracy curve data
+        accuracy_data = pd.DataFrame({
+            'Metric': ['Training', 'Testing'],
+            'Accuracy': [predictions['train_acc']*100, predictions['test_acc']*100]
+        })
+        
+        st.bar_chart(accuracy_data.set_index('Metric'), height=300)
+    
+    with col2:
+        # Model metrics table
+        model_metrics = pd.DataFrame({
+            'Metric': ['Training Accuracy', 'Testing Accuracy', 'Model Type'],
+            'Value': [
+                f"{predictions['train_acc']*100:.2f}%",
+                f"{predictions['test_acc']*100:.2f}%",
+                predictions['model_name']
+            ]
+        })
+        st.dataframe(model_metrics, use_container_width=True, hide_index=True)
     
     st.divider()
     
@@ -1294,69 +1341,161 @@ def page_results():
         col1, col2 = st.columns(2, gap="medium")
         
         with col1:
-            st.bar_chart(area_df.set_index('Class')['Area_km2'], height=400)
+            area_chart_data = area_df.set_index('Class')['Area_km2']
+            st.bar_chart(area_chart_data, height=350)
+            st.caption("Area Distribution (km²)")
         
         with col2:
-            st.bar_chart(area_df.set_index('Class')['Percent'], height=400)
+            percent_chart_data = area_df.set_index('Class')['Percent']
+            st.bar_chart(percent_chart_data, height=350)
+            st.caption("Percentage Distribution (%)")
     
     st.divider()
     
     # Download options
-    st.markdown("<h2>📥 Export & Download</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>📥 Export Results</h2>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3, gap="medium")
+    col1, col2, col3, col4 = st.columns(4, gap="medium")
     
+    # 1. Download Classification Map (PNG)
     with col1:
-        if st.button("Download Classification Map (PNG)", use_container_width=True):
+        st.markdown("**Classification Map**")
+        if st.button("📥 PNG", key="btn_map", use_container_width=True):
             import io
             from PIL import Image as PILImage
             
-            # Convert to PIL Image
-            color_map_uint8 = (color_map).astype(np.uint8)
+            color_map_uint8 = color_map.astype(np.uint8)
             pil_image = PILImage.fromarray(color_map_uint8, 'RGB')
             
-            # Save to bytes
             buffer = io.BytesIO()
             pil_image.save(buffer, format='PNG')
             buffer.seek(0)
             
             st.download_button(
-                label="💾 Click to Download",
-                data=buffer,
+                label="💾 Download PNG",
+                data=buffer.getvalue(),
                 file_name="classification_map.png",
-                mime="image/png"
+                mime="image/png",
+                key="download_map"
             )
     
+    # 2. Download Area Statistics (Excel)
     with col2:
-        if st.button("Download Statistics (CSV)", use_container_width=True):
-            csv = statistics['area_stats'].to_csv(index=False)
-            st.download_button(
-                label="💾 Click to Download",
-                data=csv,
-                file_name="area_statistics.csv",
-                mime="text/csv"
-            )
+        st.markdown("**Area Statistics**")
+        if st.button("📊 Excel", key="btn_area", use_container_width=True):
+            try:
+                # Create Excel file
+                excel_buffer = io.BytesIO()
+                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                    statistics['area_stats'].to_excel(writer, sheet_name='Area Statistics', index=False)
+                
+                excel_buffer.seek(0)
+                
+                st.download_button(
+                    label="💾 Download Excel",
+                    data=excel_buffer.getvalue(),
+                    file_name="area_statistics.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="download_area"
+                )
+            except Exception as e:
+                st.error(f"Error creating Excel file: {e}")
     
+    # 3. Download Model Statistics (Excel)
     with col3:
-        if st.button("Download Model Report (TXT)", use_container_width=True):
+        st.markdown("**Model Statistics**")
+        if st.button("🤖 Excel", key="btn_model", use_container_width=True):
+            try:
+                # Create comprehensive model stats
+                model_stats = pd.DataFrame({
+                    'Model': [predictions['model_name']],
+                    'Training Accuracy': [f"{predictions['train_acc']*100:.2f}%"],
+                    'Testing Accuracy': [f"{predictions['test_acc']*100:.2f}%"],
+                    'Classes': ['4'],
+                    'Feature Count': ['10'],
+                    'Training Samples': [len(predictions['Y_true'])]
+                })
+                
+                excel_buffer = io.BytesIO()
+                with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+                    model_stats.to_excel(writer, sheet_name='Model Statistics', index=False)
+                
+                excel_buffer.seek(0)
+                
+                st.download_button(
+                    label="💾 Download Excel",
+                    data=excel_buffer.getvalue(),
+                    file_name="model_statistics.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="download_model"
+                )
+            except Exception as e:
+                st.error(f"Error creating Excel file: {e}")
+    
+    # 4. Download Report (TXT)
+    with col4:
+        st.markdown("**Full Report**")
+        if st.button("📄 TXT", key="btn_report", use_container_width=True):
             report = f"""
-CLASSIFICATION REPORT
-=====================
+{'='*60}
+REMOTE SENSING CLASSIFICATION REPORT
+{'='*60}
 
-Model: {predictions['model_name']}
+MODEL INFORMATION
+{'-'*60}
+Model Type: {predictions['model_name']}
 Training Accuracy: {predictions['train_acc']*100:.2f}%
 Testing Accuracy: {predictions['test_acc']*100:.2f}%
+Number of Classes: 4
+Features Used: 10 (7 bands + 3 indices)
+Training Samples: {len(predictions['Y_true'])}
 
-AREA STATISTICS
-===============
+LAND COVER DISTRIBUTION
+{'-'*60}
 {statistics['area_stats'].to_string(index=False)}
+
+CLASSIFICATION DETAILS
+{'-'*60}
+Classes:
+  1. Water (🔵 Blue)
+  2. Vegetation (🟢 Green)
+  3. Urban (🔴 Red)
+  4. Desert (🟠 Orange)
+
+Spectral Indices Computed:
+  - NDVI (Normalized Difference Vegetation Index)
+  - NDWI (Normalized Difference Water Index)
+  - NDBI (Normalized Difference Built-up Index)
+
+Calibration:
+  - Radiometric calibration applied
+  - Sun elevation angle: 39.31°
+  - Pixel size: 30 meters (Landsat 8 standard)
+
+{'='*60}
+Generated on: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
+{'='*60}
             """
+            
             st.download_button(
-                label="💾 Click to Download",
+                label="💾 Download TXT",
                 data=report,
                 file_name="classification_report.txt",
-                mime="text/plain"
+                mime="text/plain",
+                key="download_report"
             )
+    
+    st.divider()
+    
+    # Summary
+    st.markdown("""
+    <div class='card card-success'>
+        <h3 style='text-align: center; margin-top: 0;'>✅ Analysis Complete</h3>
+        <p style='text-align: center; margin-bottom: 0;'>
+            Classification completed successfully. Download your results using the buttons above.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================================
