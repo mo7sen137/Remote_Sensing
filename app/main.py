@@ -63,26 +63,51 @@ logger = logging.getLogger(__name__)
 # � UTILITY FUNCTIONS
 # ============================================================================
 
-def predict_in_chunks(model, X_full, chunk_size=50000):
+@st.cache_data
+def predict_in_chunks(X_full, _model, chunk_size=500000):
     """
     Process predictions in chunks to optimize memory usage on Cloud.
-    Critical for Streamlit Cloud with limited RAM (~1GB free tier).
+    
+    Splits 4M pixels into batches (e.g., 500K pixels per batch) to:
+    - Reduce RAM usage on Streamlit Cloud (~1GB limit)
+    - Process each batch independently
+    - Concatenate results seamlessly
     
     Args:
-        model: Trained classifier
-        X_full: Full feature array
-        chunk_size: Samples per chunk (50000 is safe for 1GB)
+        X_full: Full feature array (n_samples, n_features)
+        _model: Trained classifier (underscore = not cached)
+        chunk_size: Samples per batch (500K = ~20MB per chunk)
         
     Returns:
         Array of predictions
     """
     predictions = []
-    n_samples = X_full.shape[0]
     
-    for i in range(0, n_samples, chunk_size):
-        chunk = X_full[i:i+chunk_size]
-        pred_chunk = model.predict(chunk)
+    # Progress bar for visual feedback during processing
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    for i in range(0, len(X_full), chunk_size):
+        chunk = X_full[i:i + chunk_size]
+        pred_chunk = _model.predict(chunk)
+        
+        # Handle string predictions (convert to numeric if needed)
+        if isinstance(pred_chunk[0], str):
+            pred_chunk = pred_chunk.astype(float)
+        
         predictions.append(pred_chunk)
+        
+        # Update progress bar
+        progress = min((i + chunk_size) / len(X_full), 1.0)
+        progress_bar.progress(progress)
+        
+        # Update status text
+        processed = min(i + chunk_size, len(X_full))
+        status_text.text(f"Processing: {processed:,}/{len(X_full):,} pixels")
+    
+    # Clear progress indicators
+    progress_bar.empty()
+    status_text.empty()
     
     return np.concatenate(predictions)
 
@@ -1186,7 +1211,7 @@ def page_classification():
                     
                     # ✅ FIX 2: Apply same normalization and use chunked prediction
                     X_full_normalized = st.session_state.scaler.transform(X_full)
-                    Y_pred = predict_in_chunks(selected_model, X_full_normalized, chunk_size=50000)
+                    Y_pred = predict_in_chunks(X_full_normalized, selected_model, chunk_size=500000)
                     
                     # Store in session state
                     st.session_state.predictions = {
