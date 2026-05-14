@@ -1273,7 +1273,7 @@ def page_results():
         color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
         
         # Display the image
-        st.image(color_map.astype(np.uint8), width=None, caption="Land Cover Classification Map")
+        st.image(color_map.astype(np.uint8), caption="Land Cover Classification Map")
     
     with col2:
         st.markdown("""
