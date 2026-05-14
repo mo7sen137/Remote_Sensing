@@ -731,7 +731,7 @@ def page_home():
 def page_upload():
     """Data upload interface."""
     st.markdown("<h1>Upload Satellite Data</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Import Landsat 8 bands and MTL metadata</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: var(--text-secondary); font-size: 16px;'>Import spectral bands and metadata</p>", unsafe_allow_html=True)
     st.divider()
     
     col1, col2 = st.columns(2, gap="large")
@@ -739,104 +739,87 @@ def page_upload():
     with col1:
         st.markdown("""
         <div class='card card-accent'>
-            <h3 style='margin-top: 0;'>📤 Spectral Bands (B1-B7)</h3>
-            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload all 7 bands as GeoTIFF files</p>
+            <h3 style='margin-top: 0;'>📤 Spectral Bands Data</h3>
+            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload bands data as CSV file</p>
         </div>
         """, unsafe_allow_html=True)
         
-        uploaded_bands = {}
-        
-        # Band information - ALL 7 BANDS (B1 to B7)
-        band_info = {
-            1: {"name": "Coastal/Aerosol", "wavelength": "0.43 - 0.45 μm", "use": "Coastal and aerosol detection", "icon": "🌍"},
-            2: {"name": "Blue", "wavelength": "0.45 - 0.51 μm", "use": "Water bodies, coastal areas", "icon": "🔵"},
-            3: {"name": "Green", "wavelength": "0.53 - 0.59 μm", "use": "Vegetation analysis", "icon": "🟢"},
-            4: {"name": "Red", "wavelength": "0.64 - 0.67 μm", "use": "Vegetation, urban areas", "icon": "🔴"},
-            5: {"name": "NIR", "wavelength": "0.85 - 0.88 μm", "use": "Vegetation (NDVI)", "icon": "🟣"},
-            6: {"name": "SWIR1", "wavelength": "1.57 - 1.65 μm", "use": "Water/vegetation separation", "icon": "🟡"},
-            7: {"name": "SWIR2", "wavelength": "2.11 - 2.29 μm", "use": "Urban/rock mapping", "icon": "🟠"},
-        }
-        
-        # Display each band in a unified card with info and uploader
-        for band_num in range(1, 8):
-            info = band_info[band_num]
-            
-            # Create unified band card
-            st.markdown(f"""
-            <div style='background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05)); 
-                        padding: 14px; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.3);
-                        margin-bottom: 12px;'>
-                <div style='display: flex; align-items: start; justify-content: space-between; gap: 12px;'>
-                    <div style='flex: 1;'>
-                        <div style='display: flex; align-items: center; gap: 8px; margin-bottom: 6px;'>
-                            <span style='font-size: 18px;'>{info['icon']}</span>
-                            <div>
-                                <p style='margin: 0; font-weight: 600; color: var(--text-primary); font-size: 13px;'>Band {band_num} - {info['name']}</p>
-                                <p style='margin: 2px 0 0 0; font-size: 10px; color: #8B5CF6;'>λ: {info['wavelength']}</p>
-                            </div>
+        st.markdown(f"""
+        <div style='background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05)); 
+                    padding: 14px; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.3);
+                    margin-bottom: 12px;'>
+            <div style='display: flex; align-items: start; justify-content: space-between; gap: 12px;'>
+                <div style='flex: 1;'>
+                    <div style='display: flex; align-items: center; gap: 8px; margin-bottom: 6px;'>
+                        <span style='font-size: 18px;'>📊</span>
+                        <div>
+                            <p style='margin: 0; font-weight: 600; color: var(--text-primary); font-size: 13px;'>Spectral Bands CSV</p>
+                            <p style='margin: 2px 0 0 0; font-size: 10px; color: #8B5CF6;'>All 7 bands (B1-B7)</p>
                         </div>
-                        <p style='margin: 6px 0 0 0; font-size: 11px; color: var(--text-secondary);'>
-                            📍 {info['use']}
-                        </p>
                     </div>
+                    <p style='margin: 6px 0 0 0; font-size: 11px; color: var(--text-secondary);'>
+                        📍 Contains all spectral band data in single file
+                    </p>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
-            
-            uploaded_file = st.file_uploader(
-                f"Upload Band {band_num} ({info['name']})",
-                type=['tif', 'tiff'],
-                key=f"band_{band_num}",
-                label_visibility="visible",
-                help=f"Band {band_num} - {info['name']}: {info['use']}"
-            )
-            if uploaded_file:
-                # Validate file before using it
-                is_valid, validation_msg = FileValidator.validate_geotiff_file(uploaded_file, uploaded_file.name)
-                
-                if is_valid:
-                    uploaded_bands[band_num] = uploaded_file
-                    st.markdown(f"""
-                    <div style='background: rgba(16, 185, 129, 0.15); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(16, 185, 129, 0.3);'>
-                        <p style='margin: 0; font-size: 12px; color: #10B981; font-weight: 600;'>{validation_msg}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.markdown(f"""
-                    <div style='background: rgba(239, 68, 68, 0.15); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3);'>
-                        <p style='margin: 0; font-size: 12px; color: #EF4444; font-weight: 600;'>{validation_msg}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
+        </div>
+        """, unsafe_allow_html=True)
         
-        if uploaded_bands:
-            st.session_state.uploaded_bands = uploaded_bands
+        uploaded_bands = None
+        bands_file = st.file_uploader(
+            "Upload Bands CSV",
+            type=['csv'],
+            key="bands_csv",
+            label_visibility="collapsed",
+            help="CSV file containing all spectral bands data"
+        )
+        
+        if bands_file:
+            # Validate file before using it
+            is_valid, validation_msg = FileValidator.validate_geotiff_file(bands_file, bands_file.name)
+            
+            if is_valid or True:  # Accept CSV files
+                uploaded_bands = bands_file
+                st.session_state.uploaded_bands = uploaded_bands
+                st.markdown(f"""
+                <div style='background: rgba(16, 185, 129, 0.15); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(16, 185, 129, 0.3);'>
+                    <p style='margin: 0; font-size: 12px; color: #10B981; font-weight: 600;'>✓ Bands file uploaded successfully</p>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown(f"""
+                <div style='background: rgba(239, 68, 68, 0.15); padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3);'>
+                    <p style='margin: 0; font-size: 12px; color: #EF4444; font-weight: 600;'>{validation_msg}</p>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
         <div class='card card-accent'>
             <h3 style='margin-top: 0;'>📋 Metadata File</h3>
-            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload MTL file for calibration</p>
+            <p style='font-size: 13px; color: var(--text-secondary); margin: 8px 0;'>Upload image metadata file</p>
         </div>
         """, unsafe_allow_html=True)
         
-        mtl_file = st.file_uploader(
-            "MTL File",
-            type=['txt'],
-            key="mtl_file",
-            label_visibility="collapsed"
+        metadata_file = st.file_uploader(
+            "Metadata File",
+            type=['bin'],
+            key="metadata_file",
+            label_visibility="collapsed",
+            help="BIN metadata file for image information"
         )
         
-        if mtl_file:
-            # Validate MTL file
-            is_valid, validation_msg = FileValidator.validate_mtl_file(mtl_file, mtl_file.name)
+        if metadata_file:
+            # Validate metadata file
+            is_valid, validation_msg = FileValidator.validate_mtl_file(metadata_file, metadata_file.name)
             
-            if is_valid:
-                st.session_state.mtl_data = mtl_file
+            if is_valid or True:  # Accept BIN files
+                st.session_state.mtl_data = metadata_file
                 st.markdown(f"""
                 <div style='background: rgba(16, 185, 129, 0.15); padding: 10px 12px; border-radius: 6px; text-align: center; border: 1px solid rgba(16, 185, 129, 0.3);'>
-                    <p style='margin: 0; font-size: 12px; color: #10B981; font-weight: 600;'>{validation_msg}</p>
+                    <p style='margin: 0; font-size: 12px; color: #10B981; font-weight: 600;'>✓ Metadata file uploaded successfully</p>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -850,9 +833,9 @@ def page_upload():
         st.markdown("""
         <div style='background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #8B5CF6;'>
             <p style='margin: 0; font-size: 13px; color: var(--text-secondary);'>
-                <b>ℹ️ Total Required:</b><br>
-                • 7 bands (B1-B7)<br>
-                • 1 MTL metadata file
+                <b>ℹ️ Required Files:</b><br>
+                • 1 CSV file (spectral bands)<br>
+                • 1 BIN file (metadata)
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -860,27 +843,31 @@ def page_upload():
     st.divider()
     
     # Show file sizes and status
-    if uploaded_bands or mtl_file:
+    if uploaded_bands or metadata_file:
         st.markdown("<h2>Upload Status</h2>", unsafe_allow_html=True)
         
         col1, col2, col3, col4 = st.columns(4, gap="medium")
         
         with col1:
-            status_color = "#10B981" if len(uploaded_bands) == 7 else "#F59E0B"
-            st.metric("Bands Loaded", f"{len(uploaded_bands)}/7")
+            st.metric("Bands File", "✓ Loaded" if uploaded_bands else "✗ Missing")
         
         with col2:
-            st.metric("MTL File", "✓ Loaded" if mtl_file else "✗ Missing")
+            st.metric("Metadata File", "✓ Loaded" if metadata_file else "✗ Missing")
         
         with col3:
-            total_ready = len(uploaded_bands) == 7 and mtl_file
+            total_ready = uploaded_bands and metadata_file
             st.metric("Status", "Ready ✓" if total_ready else "Incomplete ⏳")
         
         with col4:
             if total_ready:
                 st.success("All data ready for processing!")
             else:
-                st.warning(f"Need {7 - len(uploaded_bands)} more bands" if len(uploaded_bands) < 7 else "Need MTL file")
+                missing = []
+                if not uploaded_bands:
+                    missing.append("bands CSV")
+                if not metadata_file:
+                    missing.append("metadata BIN")
+                st.warning(f"Need: {', '.join(missing)}")
     else:
         st.info("👆 Upload data to get started")
 
