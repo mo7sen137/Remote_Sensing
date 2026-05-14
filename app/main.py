@@ -48,6 +48,8 @@ from sklearn.svm import SVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
+import joblib
 
 # Setup logging for security & debugging
 logging.basicConfig(
@@ -58,7 +60,35 @@ logger = logging.getLogger(__name__)
 
 
 # ============================================================================
-# 🔒 SECURITY & CONFIGURATION
+# � UTILITY FUNCTIONS
+# ============================================================================
+
+def predict_in_chunks(model, X_full, chunk_size=50000):
+    """
+    Process predictions in chunks to optimize memory usage on Cloud.
+    Critical for Streamlit Cloud with limited RAM (~1GB free tier).
+    
+    Args:
+        model: Trained classifier
+        X_full: Full feature array
+        chunk_size: Samples per chunk (50000 is safe for 1GB)
+        
+    Returns:
+        Array of predictions
+    """
+    predictions = []
+    n_samples = X_full.shape[0]
+    
+    for i in range(0, n_samples, chunk_size):
+        chunk = X_full[i:i+chunk_size]
+        pred_chunk = model.predict(chunk)
+        predictions.append(pred_chunk)
+    
+    return np.concatenate(predictions)
+
+
+# ============================================================================
+# �🔒 SECURITY & CONFIGURATION
 # ============================================================================
 
 def setup_security_headers():
@@ -1129,6 +1159,9 @@ def page_classification():
                         roi_df, B_cal, NDVI, NDWI, NDBI
                     )
                     
+                    # ✅ FIX 3: Save scaler for consistent normalization on Cloud
+                    st.session_state.scaler = trainer.scaler
+                    
                     # Train selected model
                     model_map = {
                         "Random Forest (Recommended)": RandomForestClassifier(n_estimators=50),
@@ -1150,7 +1183,10 @@ def page_classification():
                     
                     # Reshape features for prediction
                     X_full = features.reshape(-1, 10)
-                    Y_pred = selected_model.predict(X_full)
+                    
+                    # ✅ FIX 2: Apply same normalization and use chunked prediction
+                    X_full_normalized = st.session_state.scaler.transform(X_full)
+                    Y_pred = predict_in_chunks(selected_model, X_full_normalized, chunk_size=50000)
                     
                     # Store in session state
                     st.session_state.predictions = {
@@ -1252,31 +1288,34 @@ def page_results():
     
     col1, col2 = st.columns([3, 1], gap="large")
     
+    # Prepare colored map (used in both display and export sections)
+    class_map = predictions['class_map'].flatten()  # Flatten to 1D
+    
+    # Determine image dimensions based on data
+    n_pixels = len(class_map)
+    # Try to make a roughly square image
+    side_length = int(np.sqrt(n_pixels))
+    
+    # If we can't make a perfect square, pad the data
+    if side_length * side_length < n_pixels:
+        side_length += 1
+    
+    padded_size = side_length * side_length
+    if padded_size > n_pixels:
+        class_map = np.pad(class_map, (0, padded_size - n_pixels), mode='constant', constant_values=0)
+    
+    class_map_reshaped = class_map[:padded_size].reshape(side_length, side_length)
+    
+    # Create colored map
+    color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
+    
+    # ✅ FIX 1: Convert from normalized float (0-1) to uint8 (0-255) for proper display on Linux servers
+    color_map_display = (color_map * 255).astype(np.uint8)
+    
     with col1:
-        # Create colored map - FIXED VERSION
-        class_map = predictions['class_map'].flatten()  # Flatten to 1D
-        
-        # Determine image dimensions based on data
-        n_pixels = len(class_map)
-        # Try to make a roughly square image
-        side_length = int(np.sqrt(n_pixels))
-        
-        # If we can't make a perfect square, pad the data
-        if side_length * side_length < n_pixels:
-            side_length += 1
-        
-        padded_size = side_length * side_length
-        if padded_size > n_pixels:
-            class_map = np.pad(class_map, (0, padded_size - n_pixels), mode='constant', constant_values=0)
-        
-        class_map_reshaped = class_map[:padded_size].reshape(side_length, side_length)
-        
-        # Create colored map
-        color_map = ClassificationMapper.create_colored_map(class_map_reshaped)
-        
         # Display the image using matplotlib (high quality like VS Code)
         fig, ax = plt.subplots(figsize=(12, 10), dpi=100)
-        ax.imshow(color_map)  # color_map is already normalized 0-1
+        ax.imshow(color_map_display)
         ax.axis('off')
         ax.set_title("Land Cover Classification Map", fontsize=16, fontweight='bold', pad=20)
         plt.tight_layout(pad=0)
@@ -1435,8 +1474,8 @@ def page_results():
             import io
             from PIL import Image as PILImage
             
-            # Convert normalized (0-1) to uint8 (0-255)
-            color_map_uint8 = (color_map * 255).astype(np.uint8)
+            # ✅ FIX 1: Convert normalized (0-1) to uint8 (0-255) for Cloud compatibility
+            color_map_uint8 = (color_map_display * 255).astype(np.uint8)
             pil_image = PILImage.fromarray(color_map_uint8, 'RGB')
             
             buffer = io.BytesIO()
